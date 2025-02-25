@@ -2,7 +2,7 @@
 
 require_once "base.php";
 
-$ucid = "mt85"; // <-- set your ucid
+$ucid = "jjc88"; // <-- set your ucid
 
 
 $array1 = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6];
@@ -27,12 +27,12 @@ function sumValues($arr, $arrayNumber)
     $total = 0;
     // Start Solution Edits
     // Solve Challenge 1 here
+    foreach($arr as $element){
+        $total += $element;
 
-
-
-
+    }
     // Solve Challenge 2 here
-    $modifiedTotal = "?";
+    $modifiedTotal = number_format($total,2);
 
     // End Solution Edits
     echo "<p>Total Raw Value: {$total}</p>";
