@@ -21,13 +21,12 @@ function printOdds($arr, $arrayNumber)
 
     echo "Output Array: ";
     // Start Solution Edits
-
-    // jjc88, 02/17/2025.
+    foreach($arr as $oddNum){
+        if($oddNum % 2 != 0){
+            echo $oddNum . ", ";
+        }
+    }
     
-
-
-
-
     // End Solution Edits
     echo "<br>______________________________________<br>";
 }
