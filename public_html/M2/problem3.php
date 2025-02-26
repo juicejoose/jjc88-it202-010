@@ -2,7 +2,7 @@
 
 require_once "base.php";
 
-$ucid = "mt85"; // <-- set your ucid
+$ucid = "jjc88"; // <-- set your ucid
 
 
 $array1 = [42, -17, 89, -256, 1024, -4096, 50000, -123456];
@@ -24,7 +24,21 @@ function bePositive($arr, $arrayNumber)
 
     $output = array_fill(0, count($arr), null); // Initialize output array
     // Start Solution Edits
+    // jjc88 02-25-2025
+    foreach($arr as $number)
+    {
+        $x = 0;
+        $x += 1;
 
+        if($number < 0)
+        {
+        $output = array_fill($x, count($arr), $number * -1);
+        }
+        else
+        {
+        $output = array_fill($x, count($arr), $number);   
+        }
+    }
 
     // End Solution Edits
     echo "<p>Output: </p>";
