@@ -27,16 +27,14 @@ function bePositive($arr, $arrayNumber)
     // jjc88 02-25-2025
     foreach($arr as $number)
     {
-        $x = 0;
-        $x += 1;
-
+        $numFixed = (int) $number;
         if($number < 0)
         {
-        $output = array_fill($x, count($arr), $number * -1);
+        $output = $array[$numFixed] = $number * -1;
         }
         else
         {
-        $output = array_fill($x, count($arr), $number);   
+        $output = $array[$numFixed] = $number;   
         }
     }
 

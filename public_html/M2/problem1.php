@@ -21,8 +21,12 @@ function printOdds($arr, $arrayNumber)
 
     echo "Output Array: ";
     // Start Solution Edits
+    // jjc88 02-24-25, This code will go through an array and check each element if its an odd number, then prints if it is.
+    //This foreach iterates through the arrays and each element.
     foreach($arr as $oddNum){
+        //This code will check the element in the array if its odd by dividing by an even number, if it the remainder does not equal 0 it will then execute the next.
         if($oddNum % 2 != 0){
+            //If the if statement goes through it will echo the element that is odd.
             echo $oddNum . ", ";
         }
     }

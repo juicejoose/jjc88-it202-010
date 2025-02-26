@@ -27,11 +27,14 @@ function sumValues($arr, $arrayNumber)
     $total = 0;
     // Start Solution Edits
     // Solve Challenge 1 here
+    // jjc88 02-24-2025, This code will go through the array and scan each element within. It will then add up the element into a total variable. Then the total is number formated to the second decimal place.
+    //This code will go through the arrays and go through each element, then adding the element to the total. 
     foreach($arr as $element){
         $total += $element;
 
     }
     // Solve Challenge 2 here
+    //This code will format the total variable into only outputing to the second decimal place
     $modifiedTotal = number_format($total,2);
 
     // End Solution Edits
