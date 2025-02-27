@@ -25,18 +25,18 @@ function bePositive($arr, $arrayNumber)
     $output = array_fill(0, count($arr), null); // Initialize output array
     // Start Solution Edits
     // jjc88 02-25-2025
-    foreach($arr as $number)
+    foreach ($arr as $index => $number) 
     {
-        $numFixed = (int) $number;
-        if($number < 0)
+        if ($number < 0) 
         {
-        $output = $array[$numFixed] = $number * -1;
-        }
-        else
+            $arr[$index] = $number * -1;
+        } 
+        else 
         {
-        $output = $array[$numFixed] = $number;   
+            $arr[$index] = $number;
         }
     }
+    var_dump($arr);
 
     // End Solution Edits
     echo "<p>Output: </p>";
