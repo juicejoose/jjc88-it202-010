@@ -2,7 +2,7 @@
 
 require_once "base.php";
 
-$ucid = "mt85"; // <-- set your ucid
+$ucid = "jjc88"; // <-- set your ucid
 
 
 $array1 = ["hello world!", "php programming", "special@#$%^&characters", "numbers 123 456", "mIxEd CaSe InPut!"];
@@ -31,8 +31,14 @@ function transformText($arr, $arrayNumber) {
     $placeholderForMiddleCharacters = "";
     foreach ($arr as $index => $text) {
         // Start Solution Edits
+        // jjc88 02-27-2025
+        $placeholderForModifiedPhrase = preg_replace("/[^a-zA-Z0-9 ]/", "", $text);
+        $placeholderForModifiedPhrase = strtolower($placeholderForModifiedPhrase);
+        $placeholderForModifiedPhrase = ucwords($placeholderForModifiedPhrase);
+        $placeholderForModifiedPhrase = preg_replace('/\s+/', ' ', $placeholderForModifiedPhrase);
+        $placeholderForModifiedPhrase = trim($placeholderForModifiedPhrase);
 
-        
+
 
         // End Solution Edits
 

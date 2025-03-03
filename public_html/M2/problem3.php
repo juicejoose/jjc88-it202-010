@@ -25,17 +25,22 @@ function bePositive($arr, $arrayNumber)
     $output = array_fill(0, count($arr), null); // Initialize output array
     // Start Solution Edits
     // jjc88 02-25-2025
+    //Iterates through the index
     foreach ($arr as $index => $number) 
     {
+        //If number is less than 0 it will convert to +
         if ($number < 0) 
         {
             $arr[$index] = $number * -1;
         } 
         else 
+        //If number is not less than 0, then store original
         {
             $arr[$index] = $number;
         }
     }
+    //Shows values have been stored in positive value but it original data type
+    //Not sure why output is still invalid on localhost
     var_dump($arr);
 
     // End Solution Edits
