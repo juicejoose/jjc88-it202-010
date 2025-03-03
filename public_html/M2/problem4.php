@@ -32,11 +32,17 @@ function transformText($arr, $arrayNumber) {
     foreach ($arr as $index => $text) {
         // Start Solution Edits
         // jjc88 02-27-2025
+        //Using preg_replace we can replace certain characters by specifying the pattern which is non-alphanumerical characters except space.
         $placeholderForModifiedPhrase = preg_replace("/[^a-zA-Z0-9 ]/", "", $text);
+        //Using strtolower making the whole string into lower case to prepare for Title Case
         $placeholderForModifiedPhrase = strtolower($placeholderForModifiedPhrase);
+        //Using ucwords, it capitalizies the first character of a string.
         $placeholderForModifiedPhrase = ucwords($placeholderForModifiedPhrase);
+        //Using preg_replace, we are replacing extra spaces with just a single space
         $placeholderForModifiedPhrase = preg_replace('/\s+/', ' ', $placeholderForModifiedPhrase);
+        //Finally using trim to remove leading and trailing space.
         $placeholderForModifiedPhrase = trim($placeholderForModifiedPhrase);
+        //First $text is taken as base to be used for transformation, then the transoformation is stored in $placeholderForModifiedPhrase in each transform to keep update and track of phrase.
 
 
 
