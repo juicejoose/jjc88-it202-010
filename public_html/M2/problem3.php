@@ -24,7 +24,8 @@ function bePositive($arr, $arrayNumber)
 
     $output = array_fill(0, count($arr), null); // Initialize output array
     // Start Solution Edits
-    // jjc88 02-25-2025
+    // jjc88 02-25-2025 Will go through arrray with an foreach and implement an if statement where negative numbers will be coverted to postive and stored.
+    // Else is stored original value.
     //Iterates through the index
     foreach ($arr as $index => $number) 
     {
