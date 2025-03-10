@@ -4,7 +4,7 @@ require(__DIR__ . "/../../partials/nav.php");
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
-        <input type="email" name="email" required />
+        <input id="email" type="email" name="email" required />
     </div>
     <div>
         <label for="pw">Password</label>
@@ -21,36 +21,41 @@ require(__DIR__ . "/../../partials/nav.php");
     }
 </script>
 <?php
-//TODO 2: add PHP Code
-if (isset($_POST["email"]) && isset($_POST["password"])) {
+// TODO 2: add PHP Code
+if (
+    isset($_POST["email"])
+    && isset($_POST["password"])) {
+
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
-
-    //TODO 3
+    // TODO 3: validate/use
     $hasError = false;
+    // Sanitize and validate email
+    $email = sanitize_email($email);
+    if (!is_valid_email($email)) {
+        echo "Invalid email address";
+        $hasError = true;
+    }
     if (empty($email)) {
         echo "Email must not be empty";
         $hasError = true;
     }
-    //sanitize
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-    //validate
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "Invalid email address";
-        $hasError = true;
-    }
+
     if (empty($password)) {
-        echo "password must not be empty";
+        echo "Password must not be empty";
         $hasError = true;
     }
+
+
     if (strlen($password) < 8) {
         echo "Password too short";
         $hasError = true;
     }
+
     if (!$hasError) {
         //TODO 4
         $db = getDB();
-        $stmt = $db->prepare("SELECT id, email, password from Users where email = :email");
+        $stmt = $db->prepare("SELECT id, email, password from `Users` where email = :email");
         try {
             $r = $stmt->execute([":email" => $email]);
             if ($r) {
@@ -59,7 +64,9 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                     $hash = $user["password"];
                     unset($user["password"]);
                     if (password_verify($password, $hash)) {
-                        echo "Welcome $email";
+                        //echo "Welcome $email";
+                        $_SESSION["user"] = $user;
+                        die(header("Location: home.php"));
                     } else {
                         echo "Invalid password";
                     }
@@ -68,7 +75,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                 }
             }
         } catch (Exception $e) {
-            echo "<pre>" . var_export($e, true) . "</pre>";
+            echo "An error occurred: " . $e->getMessage();
         }
     }
 }
