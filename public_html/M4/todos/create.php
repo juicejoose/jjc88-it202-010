@@ -18,7 +18,26 @@ if (empty($diff)) {
     // When not valid, provide a user-friendly message of what specifically was wrong and set $is_valid to false.
     // Assigned should check for "self" if a valid format/value isn't provided.
     // Start validations
-    // can edit here
+    if (empty($task) or strlen($task) > 128)
+    {
+        $is_valid = false;
+        $error = "Empty or exceeds 128 characters.";
+    }
+    if (empty($due))
+    {
+        $is_valid = false;
+        $error = "Empty";
+    }
+    if (empty($assigned) or strlen($assigned) > 60)
+    {
+        $is_valid = false;
+        $error = "Empty of exceeds 60 characters.";
+        $assigned = "self";
+    }
+    if ($is_valid = false)
+    {
+        echo $error;
+    }
     // End validations
 
     
@@ -28,8 +47,8 @@ if (empty($diff)) {
         Ensure valid and proper PDO named placeholders are used.
         https://phpdelusions.net/pdo
         */
-        $query = ""; // edit this
-        $params = []; // Apply the proper PDO placeholder to variable mapping here
+        $query = "INSERT INTO M4_Todos (task, due, assigned, is_complete) VALUES (:task, :due, :assigned, :is_complete)"; // edit this
+        $params = [":task"=>$task, ":due"=>$due, ":assigned"=>$assigned, ":is_complete"=>$is_complete]; // Apply the proper PDO placeholder to variable mapping here
         try {
             $db = getDB();
             $stmt = $db->prepare($query);
@@ -62,6 +81,26 @@ if (empty($diff)) {
             <!-- design the form with proper labels and input fields with the correct types based on the SQL table.
              Wrap each label/input pair in a div tag.
              For "Assigned" ensure the default value is "self". -->
+             <div>
+                <label for ="task">Task:</label>
+                <input type="text" id="task" name="task"/>
+             </div>
+
+            <div>
+                <label for ="due">Due:</label>
+                <input type="date" id="due" name="due"/>
+            </div>
+
+            <div>
+                <label for="assigned">Assigned:</label>
+                <input type="text" id="assigned" name="assigned" value="self"/>
+            </div>
+
+            <div>
+                <label for="is_complete">Is Complete</label>
+                <input type="checkbox" id="is_complete" name="is_complete"/>
+            </div>
+
           
             <div>
                 <input type="submit" />
