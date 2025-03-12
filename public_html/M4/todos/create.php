@@ -1,4 +1,5 @@
 <?php
+//jjc88 03/12/2025 
 require_once(__DIR__ . "/../../../lib/db.php"); ?>
 
 <?php
@@ -18,22 +19,27 @@ if (empty($diff)) {
     // When not valid, provide a user-friendly message of what specifically was wrong and set $is_valid to false.
     // Assigned should check for "self" if a valid format/value isn't provided.
     // Start validations
+    // jjc88 03/12/2025 Using if statements to catch invalid input from users. Also setting default inputs if certain conditions are met. Also outputting what is wrong with input
+    //checks if task input is empty or exceeds 128 char, if it does it will carry out the statement
     if (empty($task) or strlen($task) > 128)
     {
         $is_valid = false;
         $error = "Task is empty or exceeds 128 characters.";
     }
+    //checks if date is empty, if true it will carry out statement
     if (empty($due))
     {
         $is_valid = false;
         $error = "Date is empty.";
     }
+    //if assigned it empty or exceeds 60 char, it will carry out statment
     if (empty($assigned) or strlen($assigned) > 60)
     {
         $is_valid = false;
         $error = "Assigned is empty of exceeds 60 characters.";
         $assigned = "self";
     }
+    // if the $is_valid value is set to false it means there is an error and it will echo the related fault
     if (!$is_valid)
     {
         
@@ -48,7 +54,10 @@ if (empty($diff)) {
         Ensure valid and proper PDO named placeholders are used.
         https://phpdelusions.net/pdo
         */
+        //jjc88 03/12/2025 making a query to sort data in proper places
+        //Inserts data to the M4_Todo sql table with the appopriate name and values
         $query = "INSERT INTO M4_Todos (task, due, assigned) VALUES (:task, :due, :assigned)"; // edit this
+        //links the values to the associated variable
         $params = [":task"=>$task, ":due"=>$due, ":assigned"=>$assigned]; // Apply the proper PDO placeholder to variable mapping here
         try {
             $db = getDB();
@@ -82,6 +91,8 @@ if (empty($diff)) {
             <!-- design the form with proper labels and input fields with the correct types based on the SQL table.
              Wrap each label/input pair in a div tag.
              For "Assigned" ensure the default value is "self". -->
+<!--jjc88 03/12/2025 Using appropriate div, label, and input to space out and have input fields that associate with that data -->
+             
              <div>
                 <label for ="task">Task:</label>
                 <input type="text" id="task" name="task"/>
