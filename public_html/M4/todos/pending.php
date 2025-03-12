@@ -12,8 +12,9 @@ if (isset($_POST["id"])) {
     Add an extra clause to update only if the complete field of the record is not set.
     https://phpdelusions.net/pdo
     */
-    $query = "UPDATE M4_Todos SET is_complete = 1, completed = CURDATE() WHERE id = :id and is_complete = 0"; // edit this
-    $params = [":id => $id"]; // apply mapping
+    //jjc88 03/12/2025 using update, im able to update the table's value specifically is_complete and completed. With the condition id and is_complete= 0 to insure correct colum is edited
+    $query = "UPDATE M4_Todos SET is_complete = 1, completed = CURDATE() WHERE id = :id AND is_complete = 0"; // edit this
+    $params = [":id" => $id]; // apply mapping
     
     try {
         $stmt = $db->prepare($query);
@@ -35,7 +36,9 @@ For Actions, this isn't part of the query and there's nothing special to select 
 Filter the results where the todo item is NOT completed and order the results by those due the soonest.
 No limit is required.
 */
-$query = "SELECT id, task, due, DATEDIFF(due, CURDATE()) AS days_offset, assigned FROM M4_Todos WHERE is_complete = 0 ORDER BY due"; // edit this
+//jjc88 03/12/2025 Using select, I am able to retrieve data from the table such as id, task and due as well as using DATEDIFF to get date difference and assigning it to days_offset from table
+//Using ORDER BY ASC will filter the data in an ascending order
+$query = "SELECT id, task, due, DATEDIFF(due, CURDATE()) AS days_offset, assigned FROM M4_Todos WHERE is_complete = 0 ORDER BY due ASC"; // edit this
 $results = [];
 try {
     $stmt = $db->prepare($query);
