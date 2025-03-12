@@ -21,21 +21,22 @@ if (empty($diff)) {
     if (empty($task) or strlen($task) > 128)
     {
         $is_valid = false;
-        $error = "Empty or exceeds 128 characters.";
+        $error = "Task is empty or exceeds 128 characters.";
     }
     if (empty($due))
     {
         $is_valid = false;
-        $error = "Empty";
+        $error = "Date is empty.";
     }
     if (empty($assigned) or strlen($assigned) > 60)
     {
         $is_valid = false;
-        $error = "Empty of exceeds 60 characters.";
+        $error = "Assigned is empty of exceeds 60 characters.";
         $assigned = "self";
     }
-    if ($is_valid = false)
+    if (!$is_valid)
     {
+        
         echo $error;
     }
     // End validations
@@ -47,8 +48,8 @@ if (empty($diff)) {
         Ensure valid and proper PDO named placeholders are used.
         https://phpdelusions.net/pdo
         */
-        $query = "INSERT INTO M4_Todos (task, due, assigned, is_complete) VALUES (:task, :due, :assigned, :is_complete)"; // edit this
-        $params = [":task"=>$task, ":due"=>$due, ":assigned"=>$assigned, ":is_complete"=>$is_complete]; // Apply the proper PDO placeholder to variable mapping here
+        $query = "INSERT INTO M4_Todos (task, due, assigned) VALUES (:task, :due, :assigned)"; // edit this
+        $params = [":task"=>$task, ":due"=>$due, ":assigned"=>$assigned]; // Apply the proper PDO placeholder to variable mapping here
         try {
             $db = getDB();
             $stmt = $db->prepare($query);
@@ -94,11 +95,6 @@ if (empty($diff)) {
             <div>
                 <label for="assigned">Assigned:</label>
                 <input type="text" id="assigned" name="assigned" value="self"/>
-            </div>
-
-            <div>
-                <label for="is_complete">Is Complete</label>
-                <input type="checkbox" id="is_complete" name="is_complete"/>
             </div>
 
           
