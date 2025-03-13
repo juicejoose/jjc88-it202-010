@@ -32,6 +32,7 @@ function transformText($arr, $arrayNumber) {
     foreach ($arr as $index => $text) {
         // Start Solution Edits
         // jjc88 02-27-2025
+        // Going through each arrary with a foreach. Using transformation with specific patterns. We are able to scan the string and detected unwanted characters and replace with the specified.
         //Using preg_replace we can replace certain characters by specifying the pattern which is non-alphanumerical characters except space.
         $placeholderForModifiedPhrase = preg_replace("/[^a-zA-Z0-9 ]/", "", $text);
         //Using strtolower making the whole string into lower case to prepare for Title Case
