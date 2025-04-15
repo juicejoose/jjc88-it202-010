@@ -11,7 +11,7 @@ $localWorks = true; //some people have issues with localhost for the cookie para
 if (($localWorks && $domain == "localhost") || $domain != "localhost") {
     session_set_cookie_params([
         "lifetime" => 60 * 60,
-        "path" => "/Project",
+        "path" => "/project",
         //"domain" => $_SERVER["HTTP_HOST"] || "localhost",
         "domain" => $domain,
         "secure" => true,
@@ -23,6 +23,8 @@ session_start();
 require_once(__DIR__ . "/../lib/functions.php");
 
 ?>
+<link rel="stylesheet" href="styles.css" />
+<script src="helpers.php"></script>
 <nav>
     <ul>
         <?php if (is_logged_in()) : ?>
