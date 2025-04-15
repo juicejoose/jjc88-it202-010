@@ -131,6 +131,7 @@ $username = get_username();
         //TODO add other client side validation....
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild
+        //jjc88 04/15/2025 JS Validations for email, username, password, confirm, currrent.
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             flash("Enter a valid email", "warning");
             isValid = false;
