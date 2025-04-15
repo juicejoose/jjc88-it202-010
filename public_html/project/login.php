@@ -20,17 +20,18 @@ require(__DIR__ . "/../../partials/nav.php");
         //valid email or username
         //jjc88 4/14/2025 JS Validation for email and password
         let isValid = true;
-        if(isValidPassword(form.password.value))
+        if (!isValidEmail(form.email.value)) {
+            isValid = false;
+            flash("Please enter a valid email address.","danger");
+        }
+        if(!isValidPassword(form.password.value))
         {
             isValid = false;
-            alert("Password must be at least 8 characters long", "danger");
+            flash("Password must be at least 8 characters long", "danger");
         }
-        if(isValidEmail(form.email.value))
-        {
-            isValid = false;
-            alert("Email or username is invalid", "danger");
-        }
+        
         return true;
+        
     }
 </script>
 <?php

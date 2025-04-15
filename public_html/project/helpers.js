@@ -14,7 +14,18 @@ function flash(message = "", color = "info") {
     //add the element to the DOM (if we don't it merely exists in memory)
     flash.appendChild(outerDiv);
 }
+
 function isValidPassword(password)
 {
     return password && password.length >= 8;
+}
+
+function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex pattern
+    return re.test(email);
+}
+
+function isValidUsername(username) {
+    const re = /^[a-zA-Z0-9_-]{3,30}$/;
+    return re.test(username);
 }
