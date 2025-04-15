@@ -123,13 +123,36 @@ $username = get_username();
     function validate(form) {
         let pw = form.newPassword.value;
         let con = form.confirmPassword.value;
+        let email = form.email.value;
+        let username = form.username.value;
+        let currentPassword = form.currentPassword.value;
         let isValid = true;
-        //TODO add other client side validation....
 
+        //TODO add other client side validation....
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            flash("Enter a valid email", "warning");
+            isValid = false;
+        }
+        
+        if (username && !/^[a-zA-Z0-9_-]{3,30}$/.test(username)) {
+            flash("Username must be 3-30 characters: letters, numbers, _ or -", "warning");
+            isValid = false;
+        }
+        
+        if (pw.length > 0 && currentPassword.length < 1) {
+            flash("Enter current password to change your password", "warning");
+            isValid = false;
+        }
+       
+        if (pw.length > 0 && pw.length < 8) {
+            flash("New password must be at least 8 characters", "warning");
+            isValid = false;
+        }
+        
         if (pw !== con) {
-            flash("Password and Confrim password must match", "warning");
+            flash("Password and Confirm password must match", "warning");
             isValid = false;
         }
         return isValid;

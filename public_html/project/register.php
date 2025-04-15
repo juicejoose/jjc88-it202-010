@@ -25,6 +25,7 @@ reset_session();
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+        //jjc88 04/14/2025 JS code validations for email, user, pass, and confirm.
         let isValid = true;
         if(!isValidEmail(form.email.value))
         {

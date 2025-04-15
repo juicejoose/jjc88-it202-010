@@ -22,7 +22,7 @@ require(__DIR__ . "/../../partials/nav.php");
         let isValid = true;
         if (!isValidEmail(form.email.value)) {
             isValid = false;
-            flash("Please enter a valid email address.","danger");
+            flash("Please enter a valid email address or username.","danger");
         }
         if(!isValidPassword(form.password.value))
         {
