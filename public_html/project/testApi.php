@@ -4,12 +4,14 @@ require(__DIR__ . "/../../partials/nav.php");
 $result = [];
 if (isset($_GET["requestedCurrency"])) {
     //function=GLOBAL_QUOTE&symbol=MSFT&datatype=json
+    //jjc88 04/16/2025 Made data empty, and made a variable holding the data from $_GET.
     $currency = $_GET["requestedCurrency"];
     $data = [];
+    //jjc88 04/16/2025 Edited URL end with variable to accept user inputs
     $endpoint = "https://live-metal-prices.p.rapidapi.com/v1/latest/XAU,XAG,PA,PL,GBP,EUR/$currency";
     $isRapidAPI = true;
     $rapidAPIHost = "live-metal-prices.p.rapidapi.com";
-    $result = get($endpoint, "METAL_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    $result = get($endpoint, "API_KEY", $data, $isRapidAPI, $rapidAPIHost);
     //example of cached data to save the quotas, don't forget to comment out the get() if using the cached data for testing
     /* $result = ["status" => 200, "response" => '{
     "Global Quote": {
@@ -32,6 +34,7 @@ if (isset($_GET["requestedCurrency"])) {
         $result = [];
     }
 }
+//jjc88 04/16/2025 Editedd html side to accept different variable and text names.
 ?>
 <div class="container-fluid">
     <h1>Currency Info</h1>
