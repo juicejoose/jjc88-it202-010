@@ -30,12 +30,33 @@ function processCars($cars) {
     $processedCars = []; // result array
     $classic_age = 25; // don't change this value
     // Start edits
+    //jjc88 04/17/2025 First have a determine current year which is 2025, then using logic to create a foreach.
+    //This for each will find age and is isClassic is true or false, for each car in the array.
+    //Then will create a new array for each car with original properties and filling in the
+    //age and isClassic with the predetermined values at the begining of the logic.
+    $currentYear = 2025;
+
+    foreach ($cars as $car)
+    {
+        $age = $currentYear - $car["year"];
+        $isClassic = $age >= $classic_age;
+
+        $processedCars [] = 
+        [
+            "id" => $car["id"],
+            "make" => $car["make"],
+            "model" => $car["model"],
+            "year" => $car["year"],
+            "age" => $age,
+            "isClassic" => $isClassic
+        ];
+    }
    
     // End edits
     echo "<pre>" . var_export($processedCars, true) . "</pre>";
     
 }
-$ucid = "mt85"; // replace with your UCID
+$ucid = "jjc88"; // replace with your UCID
 printHeader($ucid, 2); 
 ?>
 <table>
