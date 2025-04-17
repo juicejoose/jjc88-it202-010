@@ -2,13 +2,14 @@
 require(__DIR__ . "/../../partials/nav.php");
 
 $result = [];
-if (isset($_GET["symbol"])) {
+if (isset($_GET["requestedCurrency"])) {
     //function=GLOBAL_QUOTE&symbol=MSFT&datatype=json
-    $data = ["function" => "GLOBAL_QUOTE", "symbol" => $_GET["symbol"], "datatype" => "json"];
-    $endpoint = "https://alpha-vantage.p.rapidapi.com/query";
+    $currency = $_GET["requestedCurrency"];
+    $data = [];
+    $endpoint = "https://live-metal-prices.p.rapidapi.com/v1/latest/XAU,XAG,PA,PL,GBP,EUR/$currency";
     $isRapidAPI = true;
-    $rapidAPIHost = "alpha-vantage.p.rapidapi.com";
-    $result = get($endpoint, "STOCK_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    $rapidAPIHost = "live-metal-prices.p.rapidapi.com";
+    $result = get($endpoint, "METAL_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
     //example of cached data to save the quotas, don't forget to comment out the get() if using the cached data for testing
     /* $result = ["status" => 200, "response" => '{
     "Global Quote": {
@@ -33,20 +34,20 @@ if (isset($_GET["symbol"])) {
 }
 ?>
 <div class="container-fluid">
-    <h1>Stock Info</h1>
+    <h1>Currency Info</h1>
     <p>Remember, we typically won't be frequently calling live data from our API, this is merely a quick sample. We'll want to cache data in our DB to save on API quota.</p>
     <form>
         <div>
-            <label>Symbol</label>
-            <input name="symbol" />
-            <input type="submit" value="Fetch Stock" />
+            <label>Currency Pair</label>
+            <input name="requestedCurrency" />
+            <input type="submit" value="Fetch Currency" />
         </div>
     </form>
     <div class="row ">
         <?php if (isset($result)) : ?>
-            <?php foreach ($result as $stock) : ?>
+            <?php foreach ($result as $requestedCurrency) : ?>
                 <pre>
-                    <?php var_export($stock);?>
+                    <?php var_export($requestedCurrency);?>
                 </pre>
             <?php endforeach; ?>
         <?php endif; ?>
