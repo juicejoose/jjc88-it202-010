@@ -11,7 +11,7 @@ if (isset($_GET["requestedCurrency"])) {
     $endpoint = "https://live-metal-prices.p.rapidapi.com/v1/latest/XAU,XAG,PA,PL,GBP,EUR/$currency";
     $isRapidAPI = true;
     $rapidAPIHost = "live-metal-prices.p.rapidapi.com";
-    $result = get($endpoint, "API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    $result = get($endpoint, "METAL_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
     //example of cached data to save the quotas, don't forget to comment out the get() if using the cached data for testing
     /* $result = ["status" => 200, "response" => '{
     "Global Quote": {
