@@ -51,6 +51,19 @@ function joinArrays($users, $activities) {
     $joined = []; // result array
     // Start edits
     
+    foreach ($activities as $index => $activity) {
+        $user = $users[$index];
+    
+        $userIdJoined = $activity["userId"];
+        $activityJoined = $activity["activity"];
+    
+        $joined[] = [
+            "userId" => $userIdJoined,
+            "name" => $user["name"],
+            "age" => $user["age"],
+            "activity" => $activityJoined
+        ];
+    }
 
     // End edits
     echo "<pre>" . var_export($joined, true) . "</pre>";
