@@ -28,12 +28,24 @@ function processBirds($birds) {
     // TODO Objective: Extract the name, color, region into a separate multi-dimension array called $subset
     $subset = []; // result array
     // Start edits
-    
+    //jjc88 04/17/2025 First need to iterate the array. Using a foreach to look at each bird in $birds and store as $bird
+    //Fill out the subset array with only certain values such as name, color, region.
+
+    foreach ($birds as $bird)
+    {
+        $subset[] = 
+        [
+            'name' => $bird['name'],
+            'color' => $bird['color'],
+            'region' => $bird['region'],
+
+        ];
+    }
     // End edits
     echo "<pre>" . var_export($subset, true) . "</pre>";
    
 }
-$ucid = "mt85"; // replace with your UCID
+$ucid = "jjc88"; // replace with your UCID
 printHeader($ucid, 1); 
 ?>
 <table>
