@@ -50,7 +50,11 @@ function joinArrays($users, $activities) {
     // TODO Objective: Add logic to join both arrays on the userId property into one $joined array
     $joined = []; // result array
     // Start edits
-    
+    //jjc88 04/17/2025 First we iterate through both arrays activites and users.
+    // We do that by first usinig a loop through activites each will get the items but
+    //also add user = user[index] because the user and activites ID match in order so we can use index
+    //to iterate and match. 
+    //then it will fill the join array with the associated values
     foreach ($activities as $index => $activity) {
         $user = $users[$index];
     
