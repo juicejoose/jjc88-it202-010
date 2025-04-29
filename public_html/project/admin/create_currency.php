@@ -13,11 +13,12 @@ if (!has_role("Admin")) {
 //TODO handle currency fetch
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
+    if ($action === "fetch") {
     $currency = strtoupper(se($_POST, "currency", "", false)); // Get the currency symbol from the form input
     $quote = [];
     
     if (!empty($currency) && preg_match("/^[A-Z]{3}$/", $currency)) {
-        if ($action === "fetch") {
+        
             // Fetch the quote using your API function
             $result = fetch_quote($currency);
 
@@ -57,10 +58,50 @@ if (isset($_POST["action"])) {
                 flash("No data found for the provided currency symbol", "warning");
             }
         }
-    } else {
-        flash("You must provide a valid 3-letter currency symbol", "warning");
+    } 
+    // Edited: Manual creation logic for "create" action
+    elseif ($action === "create") {
+        // Extract data from the form (manual creation)
+        $base_currency = strtoupper(se($_POST, "base_currency", "", false)); // Capture the base currency
+        $unit = se($_POST, "unit", "", false); // Capture the unit
+        $XAU = se($_POST, "XAU", 0, false); // Capture XAU value
+        $XAG = se($_POST, "XAG", 0, false); // Capture XAG value
+        $PA = se($_POST, "PA", 0, false); // Capture PA value
+        $PL = se($_POST, "PL", 0, false); // Capture PL value
+        $GBP = se($_POST, "GBP", 0, false); // Capture GBP value
+        $EUR = se($_POST, "EUR", 0, false); // Capture EUR value
+
+        // Validate the input data before insertion
+        if (!empty($base_currency) && !empty($unit)) {
+            $db = getDB();
+            $query = "INSERT INTO `Currency` (`base_currency`, `unit`, `XAU`, `XAG`, `PA`, `PL`, `GBP`, `EUR`) 
+                      VALUES (:base_currency, :unit, :XAU, :XAG, :PA, :PL, :GBP, :EUR)";
+            
+            $params = [
+                ":base_currency" => $base_currency,
+                ":unit" => $unit,
+                ":XAU" => $XAU,
+                ":XAG" => $XAG,
+                ":PA" => $PA,
+                ":PL" => $PL,
+                ":GBP" => $GBP,
+                ":EUR" => $EUR
+            ];
+
+            try {
+                $stmt = $db->prepare($query);
+                $stmt->execute($params);
+                flash("Inserted record " . $db->lastInsertId(), "success");
+            } catch (PDOException $e) {
+                error_log("Error inserting into database: " . var_export($e, true));
+                flash("An error occurred while inserting the data", "danger");
+            }
+        } else {
+            flash("Please fill in all the required fields", "warning");
+        }
     }
 }
+
 
 
 //TODO handle manual create stock
@@ -119,10 +160,7 @@ if (isset($_POST["action"])) {
                 <label for="EUR">EUR</label>
                 <input type="number" name="EUR" id="EUR" placeholder="EUR" required>
             </div>
-            <div class="mb-3">
-                <label for="latest_trading_day">Currency Date</label>
-                <input type="date" name="latest_trading_day" id="latest_trading_day" placeholder="Currency Date" required>
-            </div>
+            
             <input type="hidden" name="action" value="create">
             <input type="submit" value="Create" class="btn btn-primary">
         </form>

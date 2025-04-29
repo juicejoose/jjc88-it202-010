@@ -9,7 +9,7 @@ if (!has_role("Admin")) {
 
 
 
-$query = "SELECT id, symbol, open, low, high, price, change_percent, latest_trading_day, volume, is_api FROM `IT202-S25-Stocks` ORDER BY created DESC LIMIT 25";
+$query = "SELECT id, base_currency, unit, XAU, XAG, PA, PL, GBP, EUR, created, modified, is_api FROM `Currency` ORDER BY created DESC LIMIT 25";
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
@@ -20,12 +20,12 @@ try {
         $results = $r;
     }
 } catch (PDOException $e) {
-    error_log("Error fetching stocks " . var_export($e, true));
+    error_log("Error fetching currencies " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
 ?>
 <div class="container-fluid">
-    <h3>List Stocks</h3>
+    <h3>List Currrencies</h3>
     <?php if (count($results) == 0) : ?>
     <p>No results to show</p>
 <?php else : ?>
@@ -46,7 +46,7 @@ try {
 
 
                 <td>
-                    <a href="<?php echo get_url("admin/edit_stock.php");?>?id=<?php se($record, "id"); ?>">Edit</a>
+                    <a href="<?php echo get_url("admin/edit_currency.php");?>?id=<?php se($record, "id"); ?>">Edit</a>
                 </td>
             </tr>
         <?php endforeach; ?>
