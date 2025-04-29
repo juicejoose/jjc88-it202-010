@@ -11,28 +11,57 @@ if (isset($_GET["requestedCurrency"])) {
     $endpoint = "https://live-metal-prices.p.rapidapi.com/v1/latest/XAU,XAG,PA,PL,GBP,EUR/$currency";
     $isRapidAPI = true;
     $rapidAPIHost = "live-metal-prices.p.rapidapi.com";
-    $result = get($endpoint, "METAL_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    //$result = get($endpoint, "METAL_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    $result = ["status" => 200, "response" => '{"success":true,"validationMessage":[],"baseCurrency":"EUR","unit":"ounce","rates":{"XAU":2923.986937949945,"XAG":29.041837426148746,"PA":829.470731281654,"PL":866.13338003346,"GBP":0.8504812604132436,"EUR":1}}'];
     //example of cached data to save the quotas, don't forget to comment out the get() if using the cached data for testing
-    /* $result = ["status" => 200, "response" => '{
-    "Global Quote": {
-        "01. symbol": "MSFT",
-        "02. open": "420.1100",
-        "03. high": "422.3800",
-        "04. low": "417.8400",
-        "05. price": "421.4400",
-        "06. volume": "17861855",
-        "07. latest trading day": "2024-04-02",
-        "08. previous close": "424.5700",
-        "09. change": "-3.1300",
-        "10. change percent": "-0.7372%"
-    }
-}'];*/
     error_log("Response: " . var_export($result, true));
     if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
         $result = json_decode($result["response"], true);
     } else {
         $result = [];
     }
+
+    if (isset($result["rates"])) {
+    $quote = $result["rates"];
+    $quote["base_currency"] = $result["baseCurrency"] ?? null;
+    $quote["unit"] = $result["unit"] ?? null;
+    /*$quote = array_reduce( 
+        array_keys($quote),
+        function ($temp, $key) use ($quote) {
+            $k = explode(" ", $key)[1];
+            if ($k === "change")
+            {
+                $k = "per_change";
+            }
+            $temp[$k] = str_replace('%', '', $quote[$key]);
+            return $temp;
+        }
+    );*/
+    //$result = [$quote];
+    $db = getDB();
+    $query = "INSERT INTO `Currency` ";
+    $columns = [];
+    $params = [];
+    //per record 
+    foreach ($quote as $k => $v) {
+        //array_push($columns, "'$k'");
+        //array_push (Sparams, ["=$k" => $v]);  
+        $columns[] = "`$k`";
+        $params [":$k"] = $v;
+    }
+
+    $query .= "(" . join(",", $columns) . ")";
+    $query .= "VALUES (" . join(",", array_keys ($params)) . ")";
+    var_export($query);
+    try {
+        $stmt = $db-> prepare($query);
+        $stmt->execute($params);
+        flash("Inserted record", "success");
+    } catch (PDOException $e) {
+        error_log("Something broke with the query" . var_export($e, true));
+        flash("An error occured", "danger");
+    }
+}
 }
 //jjc88 04/16/2025 Editedd html side to accept different variable and text names.
 ?>
