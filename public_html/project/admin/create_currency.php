@@ -71,11 +71,13 @@ if (isset($_POST["action"])) {
         $GBP = se($_POST, "GBP", 0, false); // Capture GBP value
         $EUR = se($_POST, "EUR", 0, false); // Capture EUR value
 
+        $is_api = 0;
+
         // Validate the input data before insertion
         if (!empty($base_currency) && !empty($unit)) {
             $db = getDB();
-            $query = "INSERT INTO `Currency` (`base_currency`, `unit`, `XAU`, `XAG`, `PA`, `PL`, `GBP`, `EUR`) 
-                      VALUES (:base_currency, :unit, :XAU, :XAG, :PA, :PL, :GBP, :EUR)";
+            $query = "INSERT INTO `Currency` (`base_currency`, `unit`, `XAU`, `XAG`, `PA`, `PL`, `GBP`, `EUR`, `is_api`) 
+                      VALUES (:base_currency, :unit, :XAU, :XAG, :PA, :PL, :GBP, :EUR, :is_api)";
             
             $params = [
                 ":base_currency" => $base_currency,
@@ -85,7 +87,8 @@ if (isset($_POST["action"])) {
                 ":PA" => $PA,
                 ":PL" => $PL,
                 ":GBP" => $GBP,
-                ":EUR" => $EUR
+                ":EUR" => $EUR,
+                ":is_api" => $is_api
             ];
 
             try {

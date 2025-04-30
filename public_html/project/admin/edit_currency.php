@@ -11,9 +11,9 @@ if (!has_role("Admin")) {
 <?php
 $id = se($_GET, "id", -1, false);
 //TODO handle stock fetch
-if (isset($_POST["symbol"])) {
+if (isset($_POST["base_currency"])) {
     foreach ($_POST as $k => $v) {
-        if (!in_array($k, ["symbol", "open", "low", "high", "price", "change_percent", "volume", "latest_trading_day"])) {
+        if (!in_array($k, ["base_currency", "unit", "XAU", "XAG", "PA", "PL", "GBP", "EUR"])) {
             unset($_POST[$k]);
         }
         $quote = $_POST;
@@ -22,7 +22,7 @@ if (isset($_POST["symbol"])) {
     // Ideally only the table name should need to change for most queries
     //update data
     $db = getDB();
-    $query = "UPDATE `IT202-S25-Stocks` SET ";
+    $query = "UPDATE `Currency` SET ";
 
     $params = [];
     //per record
@@ -50,17 +50,17 @@ if (isset($_POST["symbol"])) {
     }
 }
 
-$stock = [];
+$currency = [];
 if ($id > -1) {
     //fetch
     $db = getDB();
-    $query = "SELECT symbol, open, low, high, price, change_percent, latest_trading_day, volume FROM `IT202-S25-Stocks` WHERE id = :id";
+    $query = "SELECT base_currency, unit, XAU, XAG, PA, PL, GBP, EUR FROM `Currency` WHERE id = :id";
     try {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);
         $r = $stmt->fetch();
         if ($r) {
-            $stock = $r;
+            $currency = $r;
         }
     } catch (PDOException $e) {
         error_log("Error fetching record: " . var_export($e, true));
@@ -68,44 +68,44 @@ if ($id > -1) {
     }
 } else {
     flash("Invalid id passed", "danger");
-    die(header("Location:" . get_url("admin/list_stocks.php")));
+    die(header("Location:" . get_url("admin/list_currency.php")));
 }
 
 ?>
 <div class="container-fluid">
-    <h3>Edit Stock</h3>
+    <h3>Edit Currency</h3>
     <form method="POST">
         <div class="mb-3">
-            <label for="symbol">Stock Symbol</label>
-            <input type="text" name="symbol" id="symbol" placeholder="Stock Symbol" required value="<?php se($stock, "symbol"); ?>">
+            <label for="base_currency">Base Currency</label>
+            <input type="text" name="base_currency" id="base_currency" placeholder="Base Currency" required value="<?php se($currency, "base_currency"); ?>">
         </div>
         <div class="mb-3">
-            <label for="open">Stock Open</label>
-            <input type="number" name="open" id="open" placeholder="Stock Open" required value="<?php se($stock, "open"); ?>">
+            <label for="unit">Unit</label>
+            <input type="text" name="unit" id="unit" placeholder="Unit" required value="<?php se($currency, "unit"); ?>">
         </div>
         <div class="mb-3">
-            <label for="low">Stock Low</label>
-            <input type="number" name="low" id="low" placeholder="Stock Low" required value="<?php se($stock, "low"); ?>">
+            <label for="XAU">XAU</label>
+            <input type="number" name="XAU" id="XAU" placeholder="XAU" required value="<?php se($currency, "XAU"); ?>">
         </div>
         <div class="mb-3">
-            <label for="high">Stock High</label>
-            <input type="number" name="high" id="high" placeholder="Stock High" required value="<?php se($stock, "high"); ?>">
+            <label for="XAG">XAG</label>
+            <input type="number" name="XAG" id="XAG" placeholder="XAG" required value="<?php se($currency, "XAG"); ?>">
         </div>
         <div class="mb-3">
-            <label for="price">Stock Current Price</label>
-            <input type="number" name="price" id="price" placeholder="Stock Current Price" required value="<?php se($stock, "price"); ?>">
+            <label for="PA">PA</label>
+            <input type="number" name="PA" id="PA" placeholder="PA" required value="<?php se($currency, "PA"); ?>">
         </div>
         <div class="mb-3">
-            <label for="change_percent">Stock % change</label>
-            <input type="number" step="0.01" name="change_percent" id="change_percent" placeholder="Stock % change" required value="<?php se($stock, "change_percent"); ?>">
+            <label for="PL">PL</label>
+            <input type="number" name="PL" id="PL" placeholder="PL" required value="<?php se($currency, "PL"); ?>">
         </div>
         <div class="mb-3">
-            <label for="volume">Stock Volume</label>
-            <input type="number" name="volume" id="volume" placeholder="Stock Volume" required value="<?php se($stock, "volume"); ?>">
+            <label for="GBP">GBP</label>
+            <input type="number" name="GBP" id="GBP" placeholder="GBP" required value="<?php se($currency, "GBP"); ?>">
         </div>
         <div class="mb-3">
-            <label for="latest_trading_day">Stock Date</label>
-            <input type="date" name="latest_trading_day" id="latest_trading_day" placeholder="Stock Date" required value="<?php se($stock, "latest_trading_day"); ?>">
+            <label for="EUR">EUR</label>
+            <input type="number" name="EUR" id="EUR" placeholder="EUR" required value="<?php se($currency, "EUR"); ?>">
         </div>
         <input type="submit" value="Update" class="btn btn-primary">
     </form>
