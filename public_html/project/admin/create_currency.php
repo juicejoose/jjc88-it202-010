@@ -1,187 +1,121 @@
 <?php
-//note we need to go up 1 more directory
 require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
-?>
 
-<?php
+// Reusable form definition
+$form = [
+    ["type" => "text", "id" => "base_currency", "name" => "base_currency", "label" => "Base Currency", "rules" => ["required" => true]],
+    ["type" => "text", "id" => "unit", "name" => "unit", "label" => "Unit", "rules" => ["required" => true]],
+    ["type" => "number", "id" => "XAU", "name" => "XAU", "label" => "XAU", "rules" => ["required" => true]],
+    ["type" => "number", "id" => "XAG", "name" => "XAG", "label" => "XAG", "rules" => ["required" => true]],
+    ["type" => "number", "id" => "PA", "name" => "PA", "label" => "PA", "rules" => ["required" => true]],
+    ["type" => "number", "id" => "PL", "name" => "PL", "label" => "PL", "rules" => ["required" => true]],
+    ["type" => "number", "id" => "GBP", "name" => "GBP", "label" => "GBP", "rules" => ["required" => true]],
+    ["type" => "number", "id" => "EUR", "name" => "EUR", "label" => "EUR", "rules" => ["required" => true]],
+];
 
-//TODO handle currency fetch
+// Handle form actions
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
+
     if ($action === "fetch") {
-    $currency = strtoupper(se($_POST, "currency", "", false)); // Get the currency symbol from the form input
-    $quote = [];
-    
-    if (!empty($currency) && preg_match("/^[A-Z]{3}$/", $currency)) {
-        
-            // Fetch the quote using your API function
+        $currency = strtoupper(se($_POST, "currency", "", false));
+        if (!empty($currency) && preg_match("/^[A-Z]{3}$/", $currency)) {
             $result = fetch_quote($currency);
+            error_log("Raw API data: " . var_export($result, true));
 
-            // Log the raw API response to check the structure
-            error_log("Raw Data from API: " . var_export($result, true));
-
-            // Check if we received valid data from the API
             if (!empty($result)) {
-                $quote = $result;
-                $quote["is_api"] = 1; // Mark as API data
-
-                // Log the transformed data
-                error_log("Transformed Data for Database: " . var_export($quote, true));
-
-                // Assuming 'Currency' table columns are as mentioned earlier:
+                $result["is_api"] = 1;
                 $db = getDB();
-                $query = "INSERT INTO `Currency` ";
-                $columns = [];
-                $params = [];
-                // Prepare the query based on the keys from the API response
-                foreach ($quote as $k => $v) {
-                    array_push($columns, "`$k`");
-                    $params[":$k"] = $v;
-                }
-                $query .= "(" . join(",", $columns) . ")";
-                $query .= "VALUES (" . join(",", array_keys($params)) . ")";
+                $columns = array_keys($result);
+                $query = "INSERT INTO `Currency` (`" . implode("`,`", $columns) . "`) VALUES (:" . implode(",:", $columns) . ")";
+                $params = array_combine(array_map(fn($k) => ":$k", $columns), array_values($result));
 
                 try {
                     $stmt = $db->prepare($query);
                     $stmt->execute($params);
                     flash("Inserted record " . $db->lastInsertId(), "success");
                 } catch (PDOException $e) {
-                    error_log("Something broke with the query: " . var_export($e, true));
-                    flash("An error occurred", "danger");
+                    error_log("Insert error: " . var_export($e, true));
+                    flash("Insert failed", "danger");
                 }
             } else {
-                flash("No data found for the provided currency symbol", "warning");
+                flash("No data found for $currency", "warning");
             }
         }
-    } 
-    // Edited: Manual creation logic for "create" action
-    elseif ($action === "create") {
-        // Extract data from the form (manual creation)
-        $base_currency = strtoupper(se($_POST, "base_currency", "", false)); // Capture the base currency
-        $unit = se($_POST, "unit", "", false); // Capture the unit
-        $XAU = se($_POST, "XAU", 0, false); // Capture XAU value
-        $XAG = se($_POST, "XAG", 0, false); // Capture XAG value
-        $PA = se($_POST, "PA", 0, false); // Capture PA value
-        $PL = se($_POST, "PL", 0, false); // Capture PL value
-        $GBP = se($_POST, "GBP", 0, false); // Capture GBP value
-        $EUR = se($_POST, "EUR", 0, false); // Capture EUR value
+    } elseif ($action === "create") {
+        $data = [];
+        foreach ($form as $field) {
+            $data[$field["name"]] = se($_POST, $field["name"], "", false);
+        }
+        $data["is_api"] = 0;
 
-        $is_api = 0;
-
-        // Validate the input data before insertion
-        if (!empty($base_currency) && !empty($unit)) {
+        if (!empty($data["base_currency"]) && !empty($data["unit"])) {
             $db = getDB();
             $query = "INSERT INTO `Currency` (`base_currency`, `unit`, `XAU`, `XAG`, `PA`, `PL`, `GBP`, `EUR`, `is_api`) 
                       VALUES (:base_currency, :unit, :XAU, :XAG, :PA, :PL, :GBP, :EUR, :is_api)";
-            
-            $params = [
-                ":base_currency" => $base_currency,
-                ":unit" => $unit,
-                ":XAU" => $XAU,
-                ":XAG" => $XAG,
-                ":PA" => $PA,
-                ":PL" => $PL,
-                ":GBP" => $GBP,
-                ":EUR" => $EUR,
-                ":is_api" => $is_api
-            ];
 
             try {
                 $stmt = $db->prepare($query);
-                $stmt->execute($params);
+                $stmt->execute($data);
                 flash("Inserted record " . $db->lastInsertId(), "success");
             } catch (PDOException $e) {
-                error_log("Error inserting into database: " . var_export($e, true));
-                flash("An error occurred while inserting the data", "danger");
+                error_log("Create error: " . var_export($e, true));
+                flash("Create failed", "danger");
             }
         } else {
-            flash("Please fill in all the required fields", "warning");
+            flash("Base currency and unit are required", "warning");
         }
     }
 }
-
-
-
-//TODO handle manual create stock
 ?>
+
 <div class="container-fluid">
     <h3>Create or Fetch Currency</h3>
     <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link bg-warning" href="#" onclick="switchTab('create')">Fetch</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link bg-warning" href="#" onclick="switchTab('fetch')">Create</a>
-        </li>
+        <li class="nav-item"><a class="nav-link bg-warning" href="#" onclick="switchTab('fetch')">Fetch</a></li>
+        <li class="nav-item"><a class="nav-link bg-warning" href="#" onclick="switchTab('create')">Create</a></li>
     </ul>
+
     <div id="fetch" class="tab-target">
         <form method="POST">
-            <div>
-                <label for="currency">Currency</label>
-                <input type="search" name="currency" id="currency" placeholder="Currency" required>
+            <div class="mb-3">
+                <?php render_input([
+                    "type" => "text",
+                    "name" => "currency",
+                    "id" => "currency",
+                    "label" => "Currency Symbol",
+                    "rules" => ["required" => true]
+                ]); ?>
             </div>
             <input type="hidden" name="action" value="fetch">
-            <input type="submit" value="Fetch" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary">Fetch</button>
         </form>
     </div>
-    <div id="create" style="display: none;" class="tab-target">
+
+    <div id="create" class="tab-target" style="display:none;">
         <form method="POST">
-            <div class="mb-3">
-                <label for="base_currency">Base Currency</label>
-                <input type="text" name="base_currency" id="base_currency" placeholder="Currency Ticker" required>
-            </div>
-            <div class="mb-3">
-                <label for="unit">Unit</label>
-                <input type="text" name="unit" id="unit" placeholder="Unit" required>
-            </div>
-            <div class="mb-3">
-                <label for="low">XAU</label>
-                <input type="number" name="XAU" id="XAU" placeholder="XAU" required>
-            </div>
-            <div class="mb-3">
-                <label for="XAG">XAG</label>
-                <input type="number" name="XAG" id="XAG" placeholder="XAG" required>
-            </div>
-            <div class="mb-3">
-                <label for="PA">PA</label>
-                <input type="number" name="PA" id="PA" placeholder="PA" required>
-            </div>
-            <div class="mb-3">
-                <label for="PL">PL</label>
-                <input type="number" name="PL" id="PL" placeholder="PL" required>
-            </div>
-            <div class="mb-3">
-                <label for="GBP">GBP</label>
-                <input type="number" name="GBP" id="GBP" placeholder="GBP" required>
-            </div>
-            <div class="mb-3">
-                <label for="EUR">EUR</label>
-                <input type="number" name="EUR" id="EUR" placeholder="EUR" required>
-            </div>
-            
+            <?php foreach ($form as $field): ?>
+                <div class="mb-3"><?php render_input($field); ?></div>
+            <?php endforeach; ?>
             <input type="hidden" name="action" value="create">
-            <input type="submit" value="Create" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary">Create</button>
         </form>
     </div>
 </div>
+
 <script>
-    function switchTab(tab) {
-        let target = document.getElementById(tab);
-        if (target) {
-            let eles = document.getElementsByClassName("tab-target");
-            for (let ele of eles) {
-                ele.style.display = (ele.id === tab) ? "none" : "block";
-            }
-        }
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-target').forEach(el => {
+            el.style.display = (el.id === tabId) ? 'block' : 'none';
+        });
     }
+    // Default to fetch tab
+    switchTab('fetch');
 </script>
 
-<?php
-//note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
-?>
+<?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
