@@ -71,12 +71,12 @@ if ($id > -1) {
 $form = [
     ["type" => "text", "id" => "base_currency", "name" => "base_currency", "label" => "Base Currency", "rules" => ["required" => true]],
     ["type" => "text", "id" => "unit", "name" => "unit", "label" => "Unit", "rules" => ["required" => true]],
-    ["type" => "number", "id" => "XAU", "name" => "XAU", "label" => "XAU", "rules" => ["required" => true]],
-    ["type" => "number", "id" => "XAG", "name" => "XAG", "label" => "XAG", "rules" => ["required" => true]],
-    ["type" => "number", "id" => "PA", "name" => "PA", "label" => "PA", "rules" => ["required" => true]],
-    ["type" => "number", "id" => "PL", "name" => "PL", "label" => "PL", "rules" => ["required" => true]],
-    ["type" => "number", "id" => "GBP", "name" => "GBP", "label" => "GBP", "rules" => ["required" => true]],
-    ["type" => "number", "id" => "EUR", "name" => "EUR", "label" => "EUR", "rules" => ["required" => true]],
+    ["type" => "number", "id" => "XAU", "name" => "XAU", "label" => "XAU", "rules" => ["required" => true, "step"=>"any"]],
+    ["type" => "number", "id" => "XAG", "name" => "XAG", "label" => "XAG", "rules" => ["required" => true, "step"=>"any"]],
+    ["type" => "number", "id" => "PA", "name" => "PA", "label" => "PA", "rules" => ["required" => true, "step"=>"any"]],
+    ["type" => "number", "id" => "PL", "name" => "PL", "label" => "PL", "rules" => ["required" => true, "step"=>"any"]],
+    ["type" => "number", "id" => "GBP", "name" => "GBP", "label" => "GBP", "rules" => ["required" => true, "step"=>"any"]],
+    ["type" => "number", "id" => "EUR", "name" => "EUR", "label" => "EUR", "rules" => ["required" => true, "step"=>"any"]],
 ];
 
 // Sticky form data
