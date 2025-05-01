@@ -9,7 +9,7 @@ if (!has_role("Admin")) {
 
 $id = se($_GET, "id", -1, false);
 
-// Handle stock fetch and update
+// Handle currency fetch and update
 if (isset($_POST["base_currency"])) {
     foreach ($_POST as $k => $v) {
         if (!in_array($k, ["base_currency", "unit", "XAU", "XAG", "PA", "PL", "GBP", "EUR"])) {
@@ -49,7 +49,7 @@ if (isset($_POST["base_currency"])) {
 
 $currency = [];
 if ($id > -1) {
-    // Fetch data
+    // fetch data
     $db = getDB();
     $query = "SELECT base_currency, unit, XAU, XAG, PA, PL, GBP, EUR FROM `Currency` WHERE id = :id";
     try {
@@ -79,7 +79,7 @@ $form = [
     ["type" => "number", "id" => "EUR", "name" => "EUR", "label" => "EUR", "rules" => ["required" => true, "step"=>"any"]],
 ];
 
-// Sticky form data
+
 foreach ($form as $k => $v) {
     if (isset($currency[$v["name"]])) {
         $form[$k]["value"] = $currency[$v["name"]];
