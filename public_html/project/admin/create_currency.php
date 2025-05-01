@@ -113,10 +113,10 @@ if (isset($_POST["action"])) {
     <h3>Create or Fetch Currency</h3>
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link bg-success" href="#" onclick="switchTab('create')">Fetch</a>
+            <a class="nav-link bg-warning" href="#" onclick="switchTab('create')">Fetch</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link bg-success" href="#" onclick="switchTab('fetch')">Create</a>
+            <a class="nav-link bg-warning" href="#" onclick="switchTab('fetch')">Create</a>
         </li>
     </ul>
     <div id="fetch" class="tab-target">
