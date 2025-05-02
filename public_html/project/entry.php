@@ -34,7 +34,7 @@ if ($id > -1) {
 <div class="container-fluid">
     <h3>View Currency</h3>
     <?php if (!empty($currency)): ?>
-        <div class="card p-3">
+        <div class="card p-3 mb-3">
             <?php foreach ($currency as $label => $value): ?>
                 <div class="mb-2">
                     <strong><?= htmlspecialchars(ucfirst($label)) ?>:</strong>
@@ -42,10 +42,15 @@ if ($id > -1) {
                 </div>
             <?php endforeach; ?>
         </div>
+        <div class="d-flex gap-2">
+            <a href="<?= get_url("admin/edit_currency.php?id=" . urlencode($id)) ?>" class="btn btn-warning">Edit</a>
+            <a href="<?= get_url("admin/delete_currency.php?id=" . urlencode($id)) ?>" class="btn btn-danger">Delete</a>
+        </div>
     <?php else: ?>
         <p>No currency details available.</p>
     <?php endif; ?>
 </div>
+
 
 <?php
 require_once(__DIR__ . "/../../partials/flash.php");
