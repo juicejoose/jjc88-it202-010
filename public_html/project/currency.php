@@ -1,10 +1,5 @@
 <?php
-require(__DIR__ . "/../../../partials/nav.php");
-
-if (!has_role("Admin")) {
-    flash("You don't have permission to view this page", "warning");
-    die(header("Location: " . get_url("home.php")));
-}
+require(__DIR__ . "/../../partials/nav.php");
 
 // Handle search input
 //jjc88  05/1/2025 search and filter logic to show user their specificed search
@@ -57,8 +52,8 @@ try {
 $table = [
     "data" => $results,
     "view_url" => get_url("entry.php"),
-    "edit_url" => get_url("admin/edit_currency.php"),
-    "delete_url" => get_url("admin/delete_currency.php"),
+    //"edit_url" => get_url("admin/edit_currency.php"),
+    //"delete_url" => get_url("admin/delete_currency.php"),
     "classes" => "btn btn-secondary"
 ];
 ?>
@@ -74,5 +69,5 @@ $table = [
 </div>
 
 <?php
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../partials/flash.php");
 ?>
