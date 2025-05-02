@@ -98,7 +98,7 @@ if (isset($_POST["action"])) {
     </div>
 
     <div id="create" class="tab-target" style="display:none;">
-        <form method="POST">
+        <form method="POST" onsubmit="return validateCurrency(this)">
             <?php foreach ($form as $field): ?>
                 <div class="mb-3"><?php render_input($field); ?></div>
             <?php endforeach; ?>
@@ -116,6 +116,37 @@ if (isset($_POST["action"])) {
     }
     // Default to fetch tab
     switchTab('fetch');
+    //jjc88 05/02/2025 js validations 
+    function validateCurrency(form) {
+    
+    let isValid = true;
+
+    const baseCurrencyValue = form.base_currency.value.trim();
+    if (!baseCurrencyValue || !/^[A-Za-z]{1,3}$/.test(baseCurrencyValue)) {
+        console.log("Base Currency must be 1-3 letters");
+        isValid = false;
+    }
+
+    // Validate only letters
+    const unitValue = form.unit.value.trim();
+    if (!unitValue || !/^[A-Za-z]+$/.test(unitValue)) {
+        console.log("Unit must contain only letters");
+        isValid = false;
+    }
+
+
+    const fields = ["XAU", "XAG", "PA", "PL", "GBP", "EUR"];
+    for (let i = 0; i < fields.length; i++) {
+        let field = form[fields[i]];
+        if (!field.value.trim() || isNaN(field.value) || parseFloat(field.value) <= 0) {
+            console.log(`${fields[i]} must be a valid positive number`);
+            isValid = false;
+        }
+    }
+
+    return false;
+}
+
 </script>
 
 <?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
