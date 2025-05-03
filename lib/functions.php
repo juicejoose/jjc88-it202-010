@@ -28,6 +28,10 @@ require(__DIR__ . "/api_helper.php");
 
 require(__DIR__ . "/load_api_keys.php");
 
+require(__DIR__ . "/currency_api.php");
+
+require(__DIR__ . "/render_functions.php");
+
 
 
 ?>
