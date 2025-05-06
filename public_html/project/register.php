@@ -1,67 +1,54 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
+
+// represent form as data
+$form = [
+    ["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "rules" => ["required" => true]],
+    [
+        "type" => "text",
+        "id" => "username",
+        "name" => "username",
+        "label" => "Username",
+        "rules" => [
+            "required" => true,
+            "maxlength" => 30,
+            "title" => "3-16 lowercase letters, numbers, underscores, or hyphens"
+        ]
+    ],
+    ["type" => "password", "id" => "password", "name" => "password", "label" => "Password", "rules" => ["required" => true, "minlength" => 8]],
+    ["type" => "password", "id" => "confirm", "name" => "confirm", "label" => "Confirm Password", "rules" => ["required" => true, "minlength" => 8]],
+];
 ?>
-<form onsubmit="return validate(this)" method="POST">
-    <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" required />
-    </div>
-    <div>
-        <label for="username">Username</label>
-        <input type="text" name="username" required maxlength="30" />
-    </div>
-    <div>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" name="password" required minlength="8" />
-    </div>
-    <div>
-        <label for="confirm">Confirm</label>
-        <input type="password" name="confirm" required minlength="8" />
-    </div>
-    <input type="submit" value="Register" />
-</form>
+<div class="container-fluid">
+    <h3>Regiser</h3>
+    <form onsubmit="return validate(this)" method="POST">
+        <?php foreach ($form as $field): ?>
+            <div class="mb-3">
+                <?php render_input($field); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php render_button(["text" => "Register", "type" => "submit"]); ?>
+    </form>
+</div>
 <script>
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
-        //jjc88 04/14/2025 JS code validations for email, user, pass, and confirm.
         let isValid = true;
-        if(!isValidEmail(form.email.value))
-        {
-            isValid = false;
-            flash("Please enter a valid email address.", "danger")
-        }
-        if (!isValidUsername(form.username.value)) 
-        {
-            flash("Username must be 3-30 characters and use only letters, numbers, _ or -", "danger");
-            isValid = false;
-        }
-        if(!isValidPassword(form.password.value))
-        {
+        if (!isValidPassword(form.password.value)) {
             isValid = false;
             flash("Password must be at least 8 characters long", "danger");
         }
-        if (form.password.value !== form.confirm.value) 
-        {
-            flash("Passwords do not match", "danger");
-            isValid = false;
-        }
-        
-        return true;
+        return isValid;
     }
 </script>
 <?php
 //TODO 2: add PHP Code
-if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"])) {
+if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"]) && isset($_POST["username"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
-    $confirm = se(
-        $_POST,
-        "confirm",
-        "",
-        false
-    );
+    $confirm = se($_POST, "confirm", "", false);
     $username = se($_POST, "username", "", false);
     //TODO 3
     $hasError = false;
@@ -77,7 +64,7 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         $hasError = true;
     }
     if (!is_valid_username($username)) {
-        flash("Username must only contain 3-30 characters a-z, 0-9, _, or -", "danger");
+        flash("Username must only contain 3-16 characters a-z, 0-9, _, or -", "danger");
         $hasError = true;
     }
     if (empty($password)) {
