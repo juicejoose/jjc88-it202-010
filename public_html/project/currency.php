@@ -48,10 +48,11 @@ try {
     error_log("Error fetching currencies " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
-
+//05/6/2025 jjc88 added favorite
 $table = [
     "data" => $results,
     "view_url" => get_url("entry.php"),
+    "favorite_url" => get_url("favorite.php"),
     //"edit_url" => get_url("admin/edit_currency.php"),
     //"delete_url" => get_url("admin/delete_currency.php"),
     "classes" => "btn btn-secondary"

@@ -1,4 +1,5 @@
 <?php
+
 require_once(__DIR__ . "/../lib/functions.php");
 //Note: this is to resolve cookie issues with port numbers
 $domain = $_SERVER["HTTP_HOST"];
@@ -48,7 +49,10 @@ session_start();
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('currency.php'); ?>">Currency</a>
-                            </li>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('userfavorite.php'); ?>">Favorites</a>
+                    </li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item">
@@ -78,7 +82,7 @@ session_start();
                 <?php if (has_role("Admin")) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Currencies
+                            Admin Currency
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/create_currency.php'); ?>">Create Currency</a>
