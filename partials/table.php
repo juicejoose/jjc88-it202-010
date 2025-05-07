@@ -18,24 +18,28 @@
     $_delete_url = se($data, "delete_url", "", false);
     $_delete_label = se($data, "delete_label", "Delete", false);
     $_delete_classes = se($data, "delete_classes", "btn btn-danger", false);
-    $_favorite_url = se($data, "favorite_url", "", false); // Add favorite_url
-    $_favorite_label = se($data, "favorite_label", "Favorite", false); // Add favorite_label
-    $_favorite_classes = se($data, "favorite_classes", "btn btn-warning", false); // Add favorite_classes
-    $_unfavorite_url = se($data, "unfavorite_url", "", false); // Add favorite_url
-    $_unfavorite_label = se($data, "unfavorite_label", "Unfavorite", false); // Add favorite_label
-    $_unfavorite_classes = se($data, "unfavorite_classes", "btn btn-warning", false); // Add favorite_classes
-    $_primary_key_column = se($data, "primary_key", "id", false); // used for the URL generation
+    $_favorite_url = se($data, "favorite_url", "", false);
+    $_favorite_label = se($data, "favorite_label", "Favorite", false);
+    $_favorite_classes = se($data, "favorite_classes", "btn btn-warning", false);
+    $_unfavorite_url = se($data, "unfavorite_url", "", false);
+    $_unfavorite_label = se($data, "unfavorite_label", "Unfavorite", false);
+    $_unfavorite_classes = se($data, "unfavorite_classes", "btn btn-warning", false);
+    $_primary_key_column = se($data, "primary_key", "id", false);
     $_post_self_form = isset($data["post_self_form"]) ? $data["post_self_form"] : [];
     $_has_atleast_one_url = $_view_url || $_edit_url || $_delete_url || $_favorite_url || $_unfavorite_url || $_post_self_form;
     $_empty_message = se($data, "empty_message", "No records to show", false);
     $_header_override = isset($data["header_override"]) ? $data["header_override"] : [];
+    $_columns = isset($data["columns"]) ? $data["columns"] : []; // <-- ADDED LINE
+    $_ignored_columns = isset($data["ignored_columns"]) ? $data["ignored_columns"] : [];
+
     if (is_string($_header_override)) {
         $_header_override = explode(",", $_header_override);
     }
-    $_ignored_columns = isset($data["ignored_columns"]) ? $data["ignored_columns"] : [];
+
     if (is_string($_ignored_columns)) {
         $_ignored_columns = explode(",", $_ignored_columns);
     }
+
     if (!$_header_override && count($_data) > 0) {
         $_header_override = array_filter(array_keys($_data[0]), function ($v) use ($_ignored_columns) {
             return !in_array($v, $_ignored_columns);
@@ -50,7 +54,7 @@
             <thead>
                 <tr>
                     <?php foreach ($_header_override as $h) : ?>
-                        <th><?php se($h); ?></th>
+                        <th><?php se($_columns[$h] ?? $h); ?></th> <!-- updated line -->
                     <?php endforeach; ?>
                     <?php if ($_has_atleast_one_url) : ?>
                         <th>Actions</th>
@@ -126,17 +130,18 @@ unset(
     $_delete_url,
     $_delete_label,
     $_delete_classes,
-    $_favorite_url, // Unset favorite_url
-    $_favorite_label, // Unset favorite_label
-    $_favorite_classes, // Unset favorite_classes
-    $_unfavorite_url, // Unset favorite_url
-    $_unfavorite_label, // Unset favorite_label
-    $_unfavorite_classes, // Unset favorite_classes
+    $_favorite_url,
+    $_favorite_label,
+    $_favorite_classes,
+    $_unfavorite_url,
+    $_unfavorite_label,
+    $_unfavorite_classes,
     $_primary_key_column,
     $_post_self_form,
     $_has_atleast_one_url,
     $_empty_message,
     $_header_override,
-    $_ignored_columns
+    $_ignored_columns,
+    $_columns // <-- unsetting new variable
 );
 ?>

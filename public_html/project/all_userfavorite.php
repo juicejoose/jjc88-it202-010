@@ -5,26 +5,26 @@ $allowed_columns = ["base_currency", "unit", "created", "modified"];
 $sort_directions = ["asc", "desc"];
 
 $search = "";
-$column = se($_POST, "column", "created", false); // Default to sorting by created date
-$order = se($_POST, "order", "desc", false);      // Default sort direction to descending
-$limit = se($_POST, "limit", 10, false);          // Default limit for the number of results per page
-$page = (int)se($_POST, "page", 1, false);        // Current page number (defaults to 1)
-$created_date = se($_POST, "created_date", "", false); // New field for created date
+$column = se($_POST, "column", "created", false);
+$order = se($_POST, "order", "desc", false);
+$limit = se($_POST, "limit", 10, false);
+$page = (int)se($_POST, "page", 1, false);
+$created_date = se($_POST, "created_date", "", false);
 
 if (!in_array($column, $allowed_columns)) {
-    $column = "created"; // Ensure column is valid, default to 'created'
+    $column = "created";
 }
 if (!in_array($order, $sort_directions)) {
-    $order = "desc"; // Ensure sort direction is valid, default to 'desc'
+    $order = "desc";
 }
 if (!is_numeric($limit) || $limit < 1 || $limit > 100) {
-    $limit = 10; // Default limit is 25, ensuring it's between 1 and 100
+    $limit = 10;
 }
 if ($page < 1) {
-    $page = 1; // Ensure valid page number
+    $page = 1;
 }
 
-$offset = ($page - 1) * $limit; // Calculate offset for pagination
+$offset = ($page - 1) * $limit;
 
 $query = "SELECT 
             c.id, 
@@ -39,7 +39,8 @@ $query = "SELECT
             c.created, 
             c.modified, 
             c.is_api,
-            u.username
+            u.username,
+            (SELECT COUNT(*) FROM `User Currency Favorites` uf2 WHERE uf2.currency_id = c.id) AS favorites_count
           FROM `User Currency Favorites` uf
           JOIN `Currency` c ON uf.currency_id = c.id
           JOIN Users u ON uf.user_id = u.id";
@@ -47,7 +48,6 @@ $query = "SELECT
 $params = [];
 $conditions = [];
 
-// Search filter
 if (isset($_POST["search"])) {
     $search = se($_POST, "search", "", false);
     if (!empty($search)) {
@@ -56,18 +56,15 @@ if (isset($_POST["search"])) {
     }
 }
 
-// Filter by created date if a date is selected
 if (!empty($created_date)) {
-    $conditions[] = "DATE(c.created) = :created_date"; // Filter by created date
-    $params[":created_date"] = $created_date; // Add date filter parameter
+    $conditions[] = "DATE(c.created) = :created_date";
+    $params[":created_date"] = $created_date;
 }
 
-// Add conditions to the query if there are any
 if (!empty($conditions)) {
     $query .= " WHERE " . implode(" AND ", $conditions);
 }
 
-// Apply sorting and pagination
 $query .= " ORDER BY $column $order LIMIT :limit OFFSET :offset";
 $params[":limit"] = (int)$limit;
 $params[":offset"] = (int)$offset;
@@ -76,7 +73,6 @@ $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
 
-// Bind the parameters for the query
 foreach ($params as $key => $val) {
     $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
     $stmt->bindValue($key, $val, $type);
@@ -95,7 +91,8 @@ try {
                 "created" => $row["created"],
                 "modified" => $row["modified"],
                 "is_api" => $row["is_api"],
-                "username" => $row["username"]
+                "username" => $row["username"],
+                "favorites_count" => $row["favorites_count"]
             ];
         }, $r);
     } else {
@@ -106,7 +103,6 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
-// Count total results for pagination
 $count_query = "SELECT COUNT(*) as total FROM `User Currency Favorites` uf
                 JOIN `Currency` c ON uf.currency_id = c.id
                 JOIN Users u ON uf.user_id = u.id";
@@ -133,7 +129,7 @@ try {
     error_log("Error fetching count: " . var_export($e, true));
 }
 
-$total_pages = ceil($total_results / $limit); // Calculate total pages for pagination
+$total_pages = ceil($total_results / $limit);
 
 $table = [
     "data" => $results,
@@ -150,12 +146,14 @@ $table = [
         "XAU" => "XAU",
         "XAG" => "XAG",
         "username" => "Added By",
-        "created" => "Created Date"  // Add Created Date to the columns
+        "created" => "Created Date",
+        "modified" => "Modified Date",
+        "is_api" => "From API",
+        "favorites_count" => "Total Favorites",
     ],
     "current_user_id" => get_user_id()
 ];
 
-// Add `created` to the sort column dropdown options
 $column_options = array_map(fn($c) => [$c => ucfirst($c)], $allowed_columns);
 $order_options = array_map(fn($o) => [$o => strtoupper($o)], $sort_directions);
 ?>

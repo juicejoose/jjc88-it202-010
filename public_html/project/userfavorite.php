@@ -104,7 +104,15 @@ $table = [
     "view_label" => "View",
     "view_classes" => "btn btn-primary",
     "favorite_label" => "Unfavorite",
-    "favorite_classes" => "btn btn-warning"
+    "favorite_classes" => "btn btn-warning",
+    "columns" => [
+        "base_currency" => "Base Currency",
+        "unit" => "Unit",
+        "XAU" => "XAU",
+        "created" => "Created Date",
+        "modified" => "Modified Date",
+        "is_api" => "From API"
+    ]
 ];
 ?>
 

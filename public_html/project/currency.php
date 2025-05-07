@@ -116,7 +116,15 @@ $table = [
     "data" => $results,
     "view_url" => get_url("entry.php"),
     "favorite_url" => get_url("favorite.php"),
-    "classes" => "btn btn-secondary"
+    "classes" => "btn btn-secondary",
+    "columns" => [
+        "base_currency" => "Base Currency",
+        "unit" => "Unit",
+        "XAU" => "XAU",
+        "created" => "Created Date",
+        "modified" => "Modified Date",
+        "is_api" => "From API"
+    ]
 ];
 
 // Build select dropdown options
