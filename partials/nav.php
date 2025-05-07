@@ -48,10 +48,13 @@ session_start();
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('profile.php'); ?>">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php echo get_url('currency.php'); ?>">Currency</a>
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('currency.php'); ?>">All Currency</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('userfavorite.php'); ?>">Favorites</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('userunfavorite.php'); ?>">Unfavorites</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('all_userfavorite.php'); ?>">All User Favorites</a>

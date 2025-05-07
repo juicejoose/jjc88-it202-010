@@ -40,6 +40,7 @@ $query = "SELECT
             c.modified, 
             c.is_api,
             u.username,
+            u.id as user_id,
             (SELECT COUNT(*) FROM `User Currency Favorites` uf2 WHERE uf2.currency_id = c.id) AS favorites_count
           FROM `User Currency Favorites` uf
           JOIN `Currency` c ON uf.currency_id = c.id
@@ -83,6 +84,9 @@ try {
     $r = $stmt->fetchAll();
     if ($r) {
         $results = array_map(function ($row) {
+            $profile_url = get_url("profile.php") . "?id=" . $row["user_id"];
+            $username_link = "<a href=\"$profile_url\">" . htmlspecialchars($row["username"]) . "</a>";
+
             return [
                 "id" => $row["id"],
                 "base_currency" => $row["base_currency"],
@@ -91,8 +95,9 @@ try {
                 "created" => $row["created"],
                 "modified" => $row["modified"],
                 "is_api" => $row["is_api"],
-                "username" => $row["username"],
-                "favorites_count" => $row["favorites_count"]
+                "username" => $username_link,
+                "favorites_count" => $row["favorites_count"],
+                "user_id" => null // Remove user_id so it doesn't show in the table
             ];
         }, $r);
     } else {
@@ -151,7 +156,9 @@ $table = [
         "is_api" => "From API",
         "favorites_count" => "Total Favorites",
     ],
-    "current_user_id" => get_user_id()
+    "current_user_id" => get_user_id(),
+    "html_columns" => ["username"], // Treat username as raw HTML
+    "ignored_columns" => ["id", "user_id"], // Ignore these columns in the table output
 ];
 
 $column_options = array_map(fn($c) => [$c => ucfirst($c)], $allowed_columns);
@@ -162,7 +169,7 @@ $order_options = array_map(fn($o) => [$o => strtoupper($o)], $sort_directions);
     <h3>All User Favorite Currencies</h3>
     <form method="POST" class="mb-3 row g-2">
         <div class="col-md-2">
-            <?php render_input(["type" => "search", "name" => "search", "label" => "Search", "placeholder" => "Base Currency or Username", "value" => $search]); ?>
+            <?php render_input(["type" => "search", "name" => "search", "label" => "Base Currency", "placeholder" => "Base Currency or Username", "value" => $search]); ?>
         </div>
         <div class="col-md-2">
             <?php render_input(["type" => "date", "name" => "created_date", "label" => "Created Date", "value" => $created_date]); ?>

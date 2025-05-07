@@ -6,7 +6,8 @@ $user_id = get_user_id();
 
 if (!$user_id) {
     flash("You must be logged in to favorite a currency", "warning");
-    die(header("Location: " . get_url("login.php")));
+    header("Location: " . get_url("login.php"));
+    exit();  // Ensure script stops after redirect
 }
 
 $currency_id = (int)se($_GET, "id", 0, false);
@@ -19,7 +20,8 @@ $exists = $stmt->fetch();
 
 if ($exists) {
     flash("Currency is already in your favorites", "info");
-    die(header("Location: " . get_url("currency.php"))); // Adjust if needed
+    header("Location: " . get_url("currency.php"));
+    exit();  // Stop the script after redirection
 }
 
 // Get currency details from Currency table
@@ -29,7 +31,8 @@ $currency = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$currency) {
     flash("Currency not found", "danger");
-    die(header("Location: " . get_url("currency.php")));
+    header("Location: " . get_url("currency.php"));
+    exit();  // Stop the script after redirection
 }
 
 // Insert into favorites
@@ -61,5 +64,6 @@ try {
     flash("Error adding favorite", "danger");
 }
 
-die(header("Location: " . get_url("currency.php")));
+header("Location: " . get_url("currency.php"));
+exit();  // Stop script execution after redirection
 ?>
