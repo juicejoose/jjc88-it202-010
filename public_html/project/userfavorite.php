@@ -1,17 +1,38 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 
-// Get the current user ID (assuming you have user authentication)
-$user_id = get_user_id(); // This function should return the ID of the logged-in user
+$user_id = get_user_id();
 
-// Handle search input
+$allowed_columns = ["base_currency", "unit", "created", "modified"];
+$sort_directions = ["asc", "desc"];
+
 $search = "";
+$column = se($_POST, "column", "created", false);
+$order = se($_POST, "order", "desc", false);
+$limit = se($_POST, "limit", 10, false);
+$page = (int)se($_POST, "page", 1, false);
+$created_date = se($_POST, "created_date", "", false); // Field for created date
+
+if (!in_array($column, $allowed_columns)) {
+    $column = "created";
+}
+if (!in_array($order, $sort_directions)) {
+    $order = "desc";
+}
+if (!is_numeric($limit) || $limit < 1 || $limit > 100) {
+    $limit = 10;
+}
+
+$offset = ($page - 1) * $limit;
+
 $query = "SELECT c.id, c.base_currency, c.unit, c.XAU, c.XAG, c.PA, c.PL, c.GBP, c.EUR, c.created, c.modified, c.is_api 
           FROM `User Currency Favorites` uf 
           JOIN `Currency` c ON uf.currency_id = c.id 
-          WHERE uf.user_id = :user_id";  // Only fetch favorites for the current user
+          WHERE uf.user_id = :user_id";
+
 $params = [":user_id" => $user_id];
 
+// Search filter
 if (isset($_POST["search"])) {
     $search = se($_POST, "search", "", false);
     if (!empty($search)) {
@@ -20,47 +41,116 @@ if (isset($_POST["search"])) {
     }
 }
 
-$query .= " ORDER BY c.created DESC LIMIT 25";
+// Filter by created date if selected
+if (!empty($created_date)) {
+    $query .= " AND DATE(c.created) = :created_date";
+    $params[":created_date"] = $created_date; // Add created_date parameter to filter
+}
+
+$total_query = "SELECT COUNT(*) as total FROM `User Currency Favorites` uf 
+                JOIN `Currency` c ON uf.currency_id = c.id 
+                WHERE uf.user_id = :user_id" . (isset($params[":search"]) ? " AND c.base_currency LIKE :search" : "") . 
+                (isset($params[":created_date"]) ? " AND DATE(c.created) = :created_date" : "");
+
+$total_stmt = getDB()->prepare($total_query);
+foreach ($params as $key => $val) {
+    $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+    $total_stmt->bindValue($key, $val, $type);
+}
+$total_stmt->execute();
+$total = $total_stmt->fetch()["total"] ?? 0;
+
+$query .= " ORDER BY c.$column $order LIMIT :limit OFFSET :offset";
+$params[":limit"] = (int)$limit;
+$params[":offset"] = (int)$offset;
 
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
 
+foreach ($params as $key => $val) {
+    $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+    $stmt->bindValue($key, $val, $type);
+}
+
 try {
-    $stmt->execute($params);
+    $stmt->execute();
     $r = $stmt->fetchAll();
     if ($r) {
-        $results = $r;
+        $results = array_map(function ($row) {
+            return [
+                "id" => $row["id"],
+                "base_currency" => $row["base_currency"],
+                "unit" => $row["unit"],
+                "XAU" => $row["XAU"],
+                "created" => $row["created"],
+                "modified" => $row["modified"],
+                "is_api" => $row["is_api"]
+            ];
+        }, $r);
     } else {
-        flash("No favorite currencies found", "warning");
+        flash("No matches found", "warning");
     }
 } catch (PDOException $e) {
-    error_log("Error fetching favorite currencies " . var_export($e, true));
+    error_log("Error fetching currencies " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
 
-// Table configuration for displaying the results
 $table = [
     "data" => $results,
     "view_url" => get_url("entry.php"),
-    "favorite_url" => get_url("unfavorite.php"), // Used to toggle favorite status
+    "favorite_url" => get_url("unfavorite.php"),
     "classes" => "table table-striped",
     "view_label" => "View",
     "view_classes" => "btn btn-primary",
-    "favorite_label" => "Unfavorite", // Label changed to "Unfavorite"
+    "favorite_label" => "Unfavorite",
     "favorite_classes" => "btn btn-warning"
 ];
 ?>
 
 <div class="container-fluid">
     <h3>Your Favorite Currencies</h3>
-    <form method="POST" class="mb-3">
-        <?php render_input(["type" => "search", "name" => "search", "placeholder" => "Search Base Currency", "value" => $search]); ?>
-        <?php render_button(["text" => "Search", "type" => "submit", "classes" => "btn btn-primary"]); ?>
+    <form method="POST" class="mb-3 row g-2">
+        <div class="col-md-2">
+            <?php render_input(["type" => "search", "name" => "search", "label" => "Base Currency", "placeholder" => "Search Base Currency", "value" => $search]); ?>
+        </div>
+        <div class="col-md-2">
+            <?php render_input(["type" => "date", "name" => "created_date", "label" => "Created Date", "value" => $created_date]); ?>
+        </div>
+        <div class="col-md-2">
+            <?php render_input([
+                "type" => "select",
+                "name" => "column",
+                "label" => "Sort Column",
+                "options" => array_map(fn($c) => [$c => ucfirst($c)], $allowed_columns),
+                "value" => $column
+            ]); ?>
+        </div>
+        <div class="col-md-2">
+            <?php render_input([
+                "type" => "select",
+                "name" => "order",
+                "label" => "Order",
+                "options" => array_map(fn($o) => [$o => strtoupper($o)], $sort_directions),
+                "value" => $order
+            ]); ?>
+        </div>
+        <div class="col-md-2">
+            <?php render_input(["type" => "number", "name" => "limit", "label" => "Limit", "value" => $limit, "rules" => ["min" => 1, "max" => 100]]); ?>
+        </div>
+        <div class="col-md-2 align-self-end">
+            <?php render_button(["text" => "Search", "type" => "submit", "classes" => "btn btn-primary"]); ?>
+        </div>
     </form>
+
+    <div class="mb-3">
+        <?php
+        $on_page = count($results);
+        echo "Showing $on_page of $total results";
+        ?>
+    </div>
+
     <?php render_table($table); ?>
 </div>
 
-<?php
-require_once(__DIR__ . "/../../partials/flash.php");
-?>
+<?php require_once(__DIR__ . "/../../partials/flash.php"); ?>
