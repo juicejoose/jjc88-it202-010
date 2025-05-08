@@ -12,16 +12,22 @@ $currency_id = (int)se($_GET, "id", 0, false);
 
 if ($currency_id > 0) {
     $db = getDB();
-    // Unfavorite action: Delete from favorites
     $stmt = $db->prepare("DELETE FROM `User Currency Favorites` WHERE user_id = :uid AND currency_id = :cid");
     try {
         $stmt->execute([":uid" => $user_id, ":cid" => $currency_id]);
-        flash("Removed from favorites", "success");
+        if ($stmt->rowCount() > 0) {
+            flash("Removed from favorites", "success");
+        } else {
+            flash("Cannot unfavorite another user's favorite", "warning");
+        }
     } catch (PDOException $e) {
         error_log("Unfavorite error: " . var_export($e, true));
         flash("Error removing favorite", "danger");
     }
 }
 
-die(header("Location: " . get_url("userfavorite.php")));
+
+$redirect = se($_SERVER, "HTTP_REFERER", get_url("currency.php"), false);
+header("Location: " . $redirect);
+exit();
 ob_end_flush();

@@ -97,7 +97,8 @@ try {
                 "is_api" => $row["is_api"],
                 "username" => $username_link,
                 "favorites_count" => $row["favorites_count"],
-                "user_id" => null // Remove user_id so it doesn't show in the table
+                //"user_id" => $row["user_id"],
+                
             ];
         }, $r);
     } else {
@@ -158,7 +159,7 @@ $table = [
     ],
     "current_user_id" => get_user_id(),
     "html_columns" => ["username"], // Treat username as raw HTML
-    "ignored_columns" => ["id", "user_id"], // Ignore these columns in the table output
+     // Ignore these columns in the table output
 ];
 
 $column_options = array_map(fn($c) => [$c => ucfirst($c)], $allowed_columns);
