@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require(__DIR__ . "/../../partials/nav.php");
 
 if (!is_logged_in()) {
@@ -23,3 +24,4 @@ if ($currency_id > 0) {
 }
 
 die(header("Location: " . get_url("userfavorite.php")));
+ob_end_flush();

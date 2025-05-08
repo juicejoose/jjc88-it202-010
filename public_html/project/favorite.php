@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require(__DIR__ . "/../../partials/nav.php");
 
 // Get the current user ID
@@ -64,6 +65,8 @@ try {
     flash("Error adding favorite", "danger");
 }
 
-header("Location: " . get_url("currency.php"));
-exit();  // Stop script execution after redirection
+$redirect = se($_SERVER, "HTTP_REFERER", get_url("currency.php"), false);
+header("Location: " . $redirect);
+exit();
+ob_end_flush();
 ?>

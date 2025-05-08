@@ -1,16 +1,17 @@
 <?php
 require(__DIR__."/../../../lib/functions.php");
 session_start();
-if(!has_role("Admin")){
+if (!has_role("Admin") && !has_role("Moderator")) {
     flash("You don't have permission to do this", "warning");
-    die($_SESSION["last"]?? "brokers.php");
+    header("Location: " . get_url("userfavorite.php"));
+    exit();
 
 }
 $user_id = $_GET["id"]??get_user_id();// only logged in user
 
 if($user_id){
     $db = getDB();
-    $query = "DELETE FROM `IT202-S25-UserBrokers` WHERE user_id = :user_id";
+    $query = "DELETE FROM `User Currency Favorites` WHERE user_id = :user_id";
     try{
         $stmt = $db->prepare($query);
         $stmt->execute([":user_id"=>$user_id]);
@@ -21,4 +22,5 @@ if($user_id){
         flash("Error deleting user associations", "danger");
     }
 }
-die($_SESSION["last"]?? "currency.php");
+header("Location: " . get_url("userfavorite.php"));
+    exit();

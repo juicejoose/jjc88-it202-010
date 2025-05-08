@@ -1,7 +1,7 @@
 <?php
 require(__DIR__ . "/../../../partials/nav.php");
 //only admin has permission to delete
-if (!has_role("Admin")) {
+if (!has_role("Admin") && !has_role("Moderator")) {
     flash("You don't have permission to do that", "danger");
     die(header("Location: " . get_url("home.php")));
 }

@@ -85,10 +85,10 @@ session_start();
                         </ul>
                     </li>
                 <?php endif; ?>
-                <?php if (has_role("Admin")) : ?>
+                <?php if (has_role("Admin") || has_role("Moderator")) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Admin Currency
+                            Moderator Currency
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/create_currency.php'); ?>">Create Currency</a>

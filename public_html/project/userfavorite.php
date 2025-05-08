@@ -160,5 +160,15 @@ $table = [
 
     <?php render_table($table); ?>
 </div>
+<?php if (has_role("Admin")): ?>
+<div class="col-md-2 align-self-end">
+    <a href="<?php echo get_url('admin/unassociate_user.php') . '?id=' . $user_id; ?>" 
+       class="btn btn-danger w-100">
+        Unassociate All
+    </a>
+</div>
+<?php endif; ?>
+
+
 
 <?php require_once(__DIR__ . "/../../partials/flash.php"); ?>
