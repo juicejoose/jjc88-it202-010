@@ -18,8 +18,8 @@ function fetch_quote($currency)
     $endpoint = "https://live-metal-prices.p.rapidapi.com/v1/latest/XAU,XAG,PA,PL,GBP,EUR/$currency";
     $isRapidAPI = true;
     $rapidAPIHost = "live-metal-prices.p.rapidapi.com";
-    //$result = get($endpoint, "METAL_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
-    $result = ["status" => 200, "response" => '{"success":true,"validationMessage":[],"baseCurrency":"EUR","unit":"ounce","rates":{"XAU":2923.986937949945,"XAG":29.041837426148746,"PA":829.470731281654,"PL":866.13338003346,"GBP":0.8504812604132436,"EUR":1}}'];
+    $result = get($endpoint, "METAL_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    //$result = ["status" => 200, "response" => '{"success":true,"validationMessage":[],"baseCurrency":"EUR","unit":"ounce","rates":{"XAU":2923.986937949945,"XAG":29.041837426148746,"PA":829.470731281654,"PL":866.13338003346,"GBP":0.8504812604132436,"EUR":1}}'];
 
     error_log("API Response: " . var_export($result, true));
     if (se($result, "status", 400, false) == 200 && isset($result["response"])) {

@@ -1,4 +1,5 @@
 <?php
+//05/09/2025 jjc88 sort and filtering, limit 25, checkbox, applying role changes
 require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
@@ -6,7 +7,7 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
-// Attempt to apply
+// apply update
 if (isset($_POST["users"]) && isset($_POST["roles"])) {
     $user_ids = $_POST["users"];
     $role_ids = $_POST["roles"];
@@ -29,7 +30,7 @@ if (isset($_POST["users"]) && isset($_POST["roles"])) {
     }
 }
 
-// Get active roles (with filter)
+// Get active roles
 $active_roles = [];
 $db = getDB();
 $role_name = trim($_POST["role_name"] ?? "");
@@ -40,7 +41,7 @@ if (!empty($role_name)) {
     $role_query .= " AND name LIKE :rname";
     $role_params[":rname"] = "%$role_name%";
 }
-$role_query .= " LIMIT 25"; // Limit role search to 25 results
+$role_query .= " LIMIT 25"; // role search to 25 results
 
 $stmt = $db->prepare($role_query);
 try {
@@ -53,7 +54,7 @@ try {
     flash(var_export($e->errorInfo, true), "danger");
 }
 
-// Search for user by username
+//  user by username
 $users = [];
 $username = trim(se($_POST, "username", "", false));
 $query = "SELECT Users.id, username, 
@@ -123,6 +124,7 @@ try {
                 <tr>
                     <td>
                         <table class="table">
+                            <!-- jjc88 05/09/2025 Logic for empty fields -->
                             <?php if (empty($users)): ?>
                                 <tr>
                                     <td colspan="2">No matching users found.</td>

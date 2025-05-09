@@ -1,15 +1,15 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 
-// Allowed columns and sort directions
+// Allowed columns and sort
 $allowed_columns = ["base_currency", "unit", "created", "modified"];
 $sort_directions = ["asc", "desc"];
 
 $search = "";
 $created_date = "";
-$column = se($_POST, "column", "created", false); // default sort column
-$order = se($_POST, "order", "desc", false);      // default sort direction
-$limit = se($_POST, "limit", 10, false);          // default limit
+$column = se($_POST, "column", "created", false);
+$order = se($_POST, "order", "desc", false);
+$limit = se($_POST, "limit", 10, false);
 
 // Validate column and order
 if (!in_array($column, $allowed_columns)) {
@@ -22,7 +22,7 @@ if (!is_numeric($limit) || $limit < 1 || $limit > 100) {
     $limit = 10;
 }
 
-// Build base query
+// Query
 $query = "SELECT id, base_currency, unit, XAU, XAG, PA, PL, GBP, EUR, created, modified, is_api 
           FROM `Currency`";
 $params = [];
@@ -51,7 +51,7 @@ if (!empty($conditions)) {
     $query .= " WHERE " . implode(" AND ", $conditions);
 }
 
-// Add ORDER BY and LIMIT
+// Add order by aand limit
 $query .= " ORDER BY $column $order LIMIT :limit";
 $params[":limit"] = (int)$limit;
 
@@ -87,9 +87,9 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
-// Count total results (ignoring LIMIT)
+// Count total results
 $count_query = "SELECT COUNT(*) as total FROM `Currency`";
-$count_params = $params; // Use the same parameters
+$count_params = $params; 
 if (!empty($conditions)) {
     $count_query .= " WHERE " . implode(" AND ", $conditions);
 }
@@ -127,7 +127,7 @@ $table = [
     ]
 ];
 
-// Build select dropdown options
+// Select dropdown options
 $column_options = array_map(fn($c) => [$c => ucfirst($c)], $allowed_columns);
 $order_options = array_map(fn($o) => [$o => strtoupper($o)], $sort_directions);
 ?>

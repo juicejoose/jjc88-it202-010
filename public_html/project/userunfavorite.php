@@ -1,42 +1,43 @@
 <?php
+//05/09/2025 jjc88 Filtering and sorting
 require(__DIR__ . "/../../partials/nav.php");
 
-$user_id = get_user_id();  // Retrieve the logged-in user's ID
+$user_id = get_user_id(); 
 
-// Define allowed columns and sort directions
+// allowed columns and sort
 $allowed_columns = ["base_currency", "unit", "created", "modified"];
 $sort_directions = ["asc", "desc"];
 
-// Capture POST variables
+// POST variables
 $search = "";
-$column = se($_POST, "column", "created", false);  // Default column to sort by "created"
-$order = se($_POST, "order", "desc", false);  // Default order to "desc"
-$limit = se($_POST, "limit", 10, false);  // Default limit to 10
-$page = (int)se($_POST, "page", 1, false);  // Default page to 1
-$created_date = se($_POST, "created_date", "", false);  // Filter by created date
+$column = se($_POST, "column", "created", false);  
+$order = se($_POST, "order", "desc", false);  
+$limit = se($_POST, "limit", 10, false);  
+$page = (int)se($_POST, "page", 1, false);  
+$created_date = se($_POST, "created_date", "", false);  
 
 // Validate column and order
 if (!in_array($column, $allowed_columns)) {
-    $column = "created";  // Fallback to "created" if invalid column
+    $column = "created";  
 }
 if (!in_array($order, $sort_directions)) {
-    $order = "desc";  // Fallback to "desc" if invalid order
+    $order = "desc";  
 }
 if (!is_numeric($limit) || $limit < 1 || $limit > 100) {
-    $limit = 10;  // Ensure limit is between 1 and 100
+    $limit = 10;  //limit 10
 }
 
-$offset = ($page - 1) * $limit;  // Calculate offset for pagination
+$offset = ($page - 1) * $limit;  
 
-// Build query to select currencies that are NOT favorited by the user
+// Build query
 $query = "SELECT c.id, c.base_currency, c.unit, c.XAU, c.XAG, c.PA, c.PL, c.GBP, c.EUR, c.created, c.modified, c.is_api
           FROM `Currency` c 
           LEFT JOIN `User Currency Favorites` uf ON c.id = uf.currency_id AND uf.user_id = :user_id
-          WHERE uf.currency_id IS NULL";  // This ensures that the currency is not favorited by the user
+          WHERE uf.currency_id IS NULL";  // ensures that the currency is not favorited by the user
 
-$params = [":user_id" => $user_id];  // Parameter for user_id
+$params = [":user_id" => $user_id]; 
 
-// Add search filter if search term is provided
+// search filter
 if (isset($_POST["search"])) {
     $search = se($_POST, "search", "", false);
     if (!empty($search)) {
@@ -45,13 +46,13 @@ if (isset($_POST["search"])) {
     }
 }
 
-// Filter by created date if provided
+// created date 
 if (!empty($created_date)) {
     $query .= " AND DATE(c.created) = :created_date";
     $params[":created_date"] = $created_date;
 }
 
-// Build total query for pagination
+// total query
 $total_query = "SELECT COUNT(*) as total 
                 FROM `Currency` c 
                 LEFT JOIN `User Currency Favorites` uf ON c.id = uf.currency_id AND uf.user_id = :user_id
