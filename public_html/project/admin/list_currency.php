@@ -14,6 +14,7 @@ if (!has_role("Admin")) {
 // Default sorting values
 $allowed_columns = ["base_currency", "unit", "created", "modified"];
 $sort_directions = ["asc", "desc"];
+<<<<<<< HEAD
 $column = se($_POST, "column", "created", false);  // Default sort by 'created'
 $order = se($_POST, "order", "desc", false);      // Default sort order is descending
 $limit = se($_POST, "limit", 10, false);          // Default limit is 10
@@ -21,6 +22,11 @@ $limit = se($_POST, "limit", 10, false);          // Default limit is 10
 // Handle search input
 //jjc88  05/1/2025 search and filter logic to show user their specificed search
 >>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
+=======
+$column = se($_POST, "column", "created", false);
+$order = se($_POST, "order", "desc", false);      
+$limit = se($_POST, "limit", 10, false);          
+>>>>>>> 9e745c467f1e4602a960e32ec0b2df96d03a5b2a
 $search = "";
 $created_date = "";
 $query = "SELECT id, base_currency, unit, XAU, XAG, PA, PL, GBP, EUR, created, modified, is_api 
