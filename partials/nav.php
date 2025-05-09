@@ -1,4 +1,5 @@
 <?php
+
 require_once(__DIR__ . "/../lib/functions.php");
 //Note: this is to resolve cookie issues with port numbers
 $domain = $_SERVER["HTTP_HOST"];
@@ -47,8 +48,22 @@ session_start();
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('profile.php'); ?>">Profile</a>
                     </li>
                     <li class="nav-item">
+<<<<<<< HEAD
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('currency.php'); ?>">All Currency</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('userfavorite.php'); ?>">Favorites</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('userunfavorite.php'); ?>">Unfavorites</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('all_userfavorite.php'); ?>">All User Favorites</a>
+                    </li>
+=======
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('currency.php'); ?>">Currency</a>
                             </li>
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item">
@@ -75,10 +90,17 @@ session_start();
                         </ul>
                     </li>
                 <?php endif; ?>
+<<<<<<< HEAD
+                <?php if (has_role("Admin") || has_role("Moderator")) : ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Moderator Currency
+=======
                 <?php if (has_role("Admin")) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Currencies
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/create_currency.php'); ?>">Create Currency</a>

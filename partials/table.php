@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+<?php if (isset($data)) : ?>
+    <?php
+    // Setup some variables for readability
+=======
 <?php
 /**
  * Renders a dynamic, Bootstrap-compatible HTML table using the provided `$data` configuration array.
@@ -56,6 +61,7 @@
 <?php if (isset($data)) : ?>
     <?php
     //setup some variables for readability
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
     $_extra_classes = se($data, "extra_classes", "", false);
     $_table_class = se($data, "table_class", "table", false);
     $_title = se($data, "title", "", false);
@@ -73,6 +79,30 @@
     $_delete_url = se($data, "delete_url", "", false);
     $_delete_label = se($data, "delete_label", "Delete", false);
     $_delete_classes = se($data, "delete_classes", "btn btn-danger", false);
+<<<<<<< HEAD
+    $_favorite_url = se($data, "favorite_url", "", false);
+    $_favorite_label = se($data, "favorite_label", "Favorite", false);
+    $_favorite_classes = se($data, "favorite_classes", "btn btn-warning", false);
+    $_unfavorite_url = se($data, "unfavorite_url", "", false);
+    $_unfavorite_label = se($data, "unfavorite_label", "Unfavorite", false);
+    $_unfavorite_classes = se($data, "unfavorite_classes", "btn btn-warning", false);
+    $_primary_key_column = se($data, "primary_key", "id", false);
+    $_post_self_form = isset($data["post_self_form"]) ? $data["post_self_form"] : [];
+    $_has_atleast_one_url = $_view_url || $_edit_url || $_delete_url || $_favorite_url || $_unfavorite_url || $_post_self_form;
+    $_empty_message = se($data, "empty_message", "No records to show", false);
+    $_header_override = isset($data["header_override"]) ? $data["header_override"] : [];
+    $_columns = isset($data["columns"]) ? $data["columns"] : []; // <-- ADDED LINE
+    $_ignored_columns = isset($data["ignored_columns"]) ? $data["ignored_columns"] : [];
+
+    if (is_string($_header_override)) {
+        $_header_override = explode(",", $_header_override);
+    }
+
+    if (is_string($_ignored_columns)) {
+        $_ignored_columns = explode(",", $_ignored_columns);
+    }
+
+=======
     $_primary_key_column = se($data, "primary_key", "id", false); // used for the url generation
     //TODO persist query params (future lesson)
     //
@@ -92,12 +122,16 @@
         $_ignored_columns = explode(",", $_ignored_columns);
     }
     // attempt to get headers from $_data if no override
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
     if (!$_header_override && count($_data) > 0) {
         $_header_override = array_filter(array_keys($_data[0]), function ($v) use ($_ignored_columns) {
             return !in_array($v, $_ignored_columns);
         });
     }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
     ?>
     <?php if ($_title) : ?>
         <h3><?php se($_title); ?></h3>
@@ -107,7 +141,11 @@
             <thead>
                 <tr>
                     <?php foreach ($_header_override as $h) : ?>
+<<<<<<< HEAD
+                        <th><?php se($_columns[$h] ?? $h); ?></th> <!-- updated line -->
+=======
                         <th><?php se($h); ?></th>
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
                     <?php endforeach; ?>
                     <?php if ($_has_atleast_one_url) : ?>
                         <th>Actions</th>
@@ -143,8 +181,18 @@
                                     <?php if ($_delete_url) : ?>
                                         <a href="<?php se($_delete_url); ?>?<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_delete_classes); ?>"><?php se($_delete_label); ?></a>
                                     <?php endif; ?>
+<<<<<<< HEAD
+                                    <?php if ($_favorite_url) : ?>
+                                        <a href="<?php se($_favorite_url); ?>?<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_favorite_classes); ?>"><?php se($_favorite_label); ?></a>
+                                    <?php endif; ?>
+                                    <?php if ($_unfavorite_url) : ?>
+                                        <a href="<?php se($_unfavorite_url); ?>?<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_unfavorite_classes); ?>"><?php se($_unfavorite_label); ?></a>
+                                    <?php endif; ?>
+                                    <?php if ($_post_self_form) : ?>
+=======
                                     <?php if ($_post_self_form) : ?>
                                         <!-- TODO refactor -->
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
                                         <form method="POST">
                                             <input type="hidden" name="<?php se($_post_self_form, "name", $_primary_key_column); ?>" value="<?php se($row, $_primary_key_column); ?>" />
                                             <input type="submit" class="<?php se($_post_self_form, "classes"); ?>" value="<?php se($_post_self_form, "label", "Submit"); ?>" />
@@ -178,11 +226,27 @@ unset(
     $_delete_url,
     $_delete_label,
     $_delete_classes,
+<<<<<<< HEAD
+    $_favorite_url,
+    $_favorite_label,
+    $_favorite_classes,
+    $_unfavorite_url,
+    $_unfavorite_label,
+    $_unfavorite_classes,
+=======
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
     $_primary_key_column,
     $_post_self_form,
     $_has_atleast_one_url,
     $_empty_message,
     $_header_override,
+<<<<<<< HEAD
+    $_ignored_columns,
+    $_columns // <-- unsetting new variable
+);
+?>
+=======
     $_ignored_columns
 );
 ?>
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
