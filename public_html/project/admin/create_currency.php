@@ -148,7 +148,7 @@ if (isset($_POST["action"])) {
         }
     }
 
-    return false;
+    return isValid;
 }
 
 </script>
