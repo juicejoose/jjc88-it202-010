@@ -1,5 +1,8 @@
 <?php
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
 require_once(__DIR__ . "/../../partials/nav.php");
 
 // represent form as data

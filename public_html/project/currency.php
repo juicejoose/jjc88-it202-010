@@ -1,6 +1,7 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 
+<<<<<<< HEAD
 // Allowed columns and sort
 $allowed_columns = ["base_currency", "unit", "created", "modified"];
 $sort_directions = ["asc", "desc"];
@@ -42,10 +43,36 @@ if (isset($_POST["created_date"])) {
     $created_date = se($_POST, "created_date", "", false);
     if (!empty($created_date)) {
         $conditions[] = "DATE(created) = :created_date";
+=======
+// Handle search input
+//jjc88  05/1/2025 search and filter logic to show user their specificed search
+$search = "";
+$created_date = "";
+$query = "SELECT id, base_currency, unit, XAU, XAG, PA, PL, GBP, EUR, created, modified, is_api 
+          FROM `Currency`";
+$params = [];
+
+if (isset($_POST["search"])) {
+    $search = se($_POST, "search", "", false);
+    if (!empty($search)) {
+        $query .= " WHERE base_currency LIKE :search";
+        $params[":search"] = "%$search%";
+    }
+}
+if (isset($_POST["created_date"])) {
+    $created_date = se($_POST, "created_date", "", false);
+    if (!empty($created_date)) {
+        if (empty($params)) {
+            $query .= " WHERE DATE(created) = :created_date";
+        } else {
+            $query .= " AND DATE(created) = :created_date";
+        }
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
         $params[":created_date"] = $created_date;
     }
 }
 
+<<<<<<< HEAD
 // Apply conditions
 if (!empty($conditions)) {
     $query .= " WHERE " . implode(" AND ", $conditions);
@@ -54,11 +81,17 @@ if (!empty($conditions)) {
 // Add order by aand limit
 $query .= " ORDER BY $column $order LIMIT :limit";
 $params[":limit"] = (int)$limit;
+=======
+
+
+$query .= " ORDER BY created DESC LIMIT 25";
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
 
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
 
+<<<<<<< HEAD
 foreach ($params as $key => $val) {
     $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
     $stmt->bindValue($key, $val, $type);
@@ -79,6 +112,13 @@ try {
                 "is_api" => $row["is_api"]
             ];
         }, $r);
+=======
+try {
+    $stmt->execute($params);
+    $r = $stmt->fetchAll();
+    if ($r) {
+        $results = $r;
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
     } else {
         flash("No matches found", "warning");
     }
@@ -87,6 +127,7 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+<<<<<<< HEAD
 // Count total results
 $count_query = "SELECT COUNT(*) as total FROM `Currency`";
 $count_params = $params; 
@@ -130,10 +171,20 @@ $table = [
 // Select dropdown options
 $column_options = array_map(fn($c) => [$c => ucfirst($c)], $allowed_columns);
 $order_options = array_map(fn($o) => [$o => strtoupper($o)], $sort_directions);
+=======
+$table = [
+    "data" => $results,
+    "view_url" => get_url("entry.php"),
+    //"edit_url" => get_url("admin/edit_currency.php"),
+    //"delete_url" => get_url("admin/delete_currency.php"),
+    "classes" => "btn btn-secondary"
+];
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
 ?>
 
 <div class="container-fluid">
     <h3>List Currencies</h3>
+<<<<<<< HEAD
     <form method="POST" class="mb-3 row g-2">
         <div class="col-md-2">
             <?php render_input(["type" => "search", "name" => "search", "label" => "Base Currency", "placeholder" => "Search Base Currency", "value" => $search]); ?>
@@ -178,3 +229,16 @@ $order_options = array_map(fn($o) => [$o => strtoupper($o)], $sort_directions);
 </div>
 
 <?php require_once(__DIR__ . "/../../partials/flash.php"); ?>
+=======
+    <form method="POST" class="mb-3">
+        <?php render_input(["type" => "search", "name" => "search", "placeholder" => "Search Base Currency", "value" => $search]); ?>
+        <?php render_input(["type" => "date", "name" => "created_date", "label" => "Created Date", "value" => se($_POST, "created_date", "", false)]); ?>
+        <?php render_button(["text" => "Search", "type" => "submit", "classes" => "btn btn-primary"]); ?>
+    </form>
+    <?php render_table($table); ?>
+</div>
+
+<?php
+require_once(__DIR__ . "/../../partials/flash.php");
+?>
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7

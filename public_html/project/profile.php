@@ -44,6 +44,22 @@ if ($is_me && isset($_POST["save"])) {
             }
         }
     }
+    //select fresh data from table
+    $stmt = $db->prepare("SELECT id, email, username from Users where id = :id LIMIT 1");
+    try {
+        $stmt->execute([":id" => get_user_id()]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user) {
+            //$_SESSION["user"] = $user;
+            $_SESSION["user"]["email"] = $user["email"];
+            $_SESSION["user"]["username"] = $user["username"];
+        } else {
+            flash("User doesn't exist", "danger");
+        }
+    } catch (Exception $e) {
+        flash("An unexpected error occurred, please try again", "danger");
+        //echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
+    }
 
 
 
@@ -84,6 +100,7 @@ if ($is_me && isset($_POST["save"])) {
             }
         } else {
             flash("New passwords don't match", "warning");
+<<<<<<< HEAD
         }
     }
 }
@@ -98,6 +115,8 @@ try {
         if ($is_me) {
             $_SESSION["user"]["email"] = $user["email"];
             $_SESSION["user"]["username"] = $user["username"];
+=======
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
         }
     } else {
         flash("User doesn't exist", "danger");
@@ -109,8 +128,13 @@ try {
 ?>
 
 <?php
+<<<<<<< HEAD
 $email = $user["email"];
 $username = $user["username"];
+=======
+$email = get_user_email();
+$username = get_username();
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
 
 // represent form as data
 $form = [
@@ -157,6 +181,7 @@ $form = [
 ?>
 <div class="container-fluid">
     <h3>Profile</h3>
+<<<<<<< HEAD
     <?php if($is_me):?>
         <?php if($is_edit):?>
             <a href="<?php echo get_url("profile.php");?>">View</a>
@@ -182,6 +207,26 @@ $form = [
             let isValid = true;
             //TODO add other client side validation....
 
+=======
+
+    <form method="POST" onsubmit="return validate(this);">
+        <?php foreach ($form as $field): ?>
+            <div class="mb-3">
+                <?php render_input($field); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php render_button(["text" => "Update Profile", "type" => "submit"]); ?>
+    </form>
+
+    <script>
+        function validate(form) {
+            let pw = form.newPassword.value;
+            let con = form.confirmPassword.value;
+            let cp = form.currentPassword.value;
+            let isValid = true;
+            //TODO add other client side validation....
+
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
             //example of using flash via javascript
             //find the flash container, create a new element, appendChild
             if (pw && con && cp) {
@@ -206,6 +251,7 @@ $form = [
             return isValid;
         }
     </script>
+<<<<<<< HEAD
     <?php else:?>
         <div class="card">
             <div class="card-body">
@@ -216,6 +262,8 @@ $form = [
             </div>
         </div>
     <?php endif;?>
+=======
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
 </div>
 <?php
 require_once(__DIR__ . "/../../partials/footer.php");

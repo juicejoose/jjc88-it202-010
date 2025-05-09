@@ -56,6 +56,7 @@ try {
 
 //  user by username
 $users = [];
+<<<<<<< HEAD
 $username = trim(se($_POST, "username", "", false));
 $query = "SELECT Users.id, username, 
     (SELECT GROUP_CONCAT(name, ' (' , IF(ur.is_active = 1,'active','inactive') , ')') 
@@ -77,6 +78,27 @@ try {
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if ($results) {
         $users = $results;
+=======
+if (isset($_POST["username"])) {
+    $username = se($_POST, "username", "", false);
+    if (!empty($username)) {
+        $db = getDB();
+        $stmt = $db->prepare("SELECT Users.id, username, 
+        (SELECT GROUP_CONCAT(name, ' (' , IF(ur.is_active = 1,'active','inactive') , ')') from 
+        UserRoles ur JOIN Roles on ur.role_id = Roles.id WHERE ur.user_id = Users.id) as roles
+        from Users WHERE username like :username");
+        try {
+            $stmt->execute([":username" => "%$username%"]);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($results) {
+                $users = $results;
+            }
+        } catch (PDOException $e) {
+            flash(var_export($e->errorInfo, true), "danger");
+        }
+    } else {
+        flash("Username must not be empty", "warning");
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
     }
 } catch (PDOException $e) {
     flash(var_export($e->errorInfo, true), "danger");
@@ -161,6 +183,57 @@ try {
     </form>
 </div>
 
+<<<<<<< HEAD
+=======
+?>
+<div class="container-fluid">
+    <h1>Assign Roles</h1>
+    <form method="POST">
+        <div class="mb-3">
+            <?php render_input(["type" => "text", "name" => "username", "id" => "username", "label" => "Username search", "rules" => ["required" => true]]); ?>
+        </div>
+        <input type="hidden" name="action" value="fetch">
+        <?php render_button(["text" => "Search", "type" => "submit"]); ?>
+    </form>
+    <form method="POST">
+        <?php if (isset($username) && !empty($username)) : ?>
+            <input type="hidden" name="username" value="<?php se($username, false); ?>" />
+        <?php endif; ?>
+        <table class="table">
+            <thead>
+                <th>Users</th>
+                <th>Roles to Assign</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <table class="table">
+                            <?php foreach ($users as $user) : ?>
+                                <tr>
+                                    <td>
+                                        <label for="user_<?php se($user, 'id'); ?>"><?php se($user, "username"); ?></label>
+                                        <input id="user_<?php se($user, 'id'); ?>" type="checkbox" name="users[]" value="<?php se($user, 'id'); ?>" />
+                                    </td>
+                                    <td><?php se($user, "roles", "No Roles"); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table class="table">
+                    </td>
+                    <td>
+                        <?php foreach ($active_roles as $role) : ?>
+                            <div>
+                                <label for="role_<?php se($role, 'id'); ?>"><?php se($role, "name"); ?></label>
+                                <input id="role_<?php se($role, 'id'); ?>" type="checkbox" name="roles[]" value="<?php se($role, 'id'); ?>" />
+                            </div>
+                        <?php endforeach; ?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <?php render_button(["text" => "Toggle Roles", "type" => "submit"]); ?>
+    </form>
+</div>
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
 <?php
 require_once(__DIR__ . "/../../../partials/flash.php");
 ?>

@@ -1,7 +1,11 @@
 <?php
 require(__DIR__ . "/../../../partials/nav.php");
 
+<<<<<<< HEAD
 if (!has_role("Admin") && !has_role("Moderator")) {
+=======
+if (!has_role("Admin")) {
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
     flash("You don't have permission to view this page", "warning");
     die(header("Location: $BASE_PATH" . "/home.php"));
 }

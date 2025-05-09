@@ -32,7 +32,10 @@ require(__DIR__ . "/currency_api.php");
 
 require(__DIR__ . "/render_functions.php");
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3d7eba7341e63905aaee348b9d5d3c7865c61bb7
 
 
 ?>
