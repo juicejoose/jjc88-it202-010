@@ -9,9 +9,9 @@ if (!has_role("Admin") && !has_role("Moderator")) {
 // Default sorting values
 $allowed_columns = ["base_currency", "unit", "created", "modified"];
 $sort_directions = ["asc", "desc"];
-$column = se($_POST, "column", "created", false);  // Default sort by 'created'
-$order = se($_POST, "order", "desc", false);      // Default sort order is descending
-$limit = se($_POST, "limit", 10, false);          // Default limit is 10
+$column = se($_POST, "column", "created", false);
+$order = se($_POST, "order", "desc", false);      
+$limit = se($_POST, "limit", 10, false);          
 $search = "";
 $created_date = "";
 $query = "SELECT id, base_currency, unit, XAU, XAG, PA, PL, GBP, EUR, created, modified, is_api 
