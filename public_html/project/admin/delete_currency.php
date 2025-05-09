@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require(__DIR__ . "/../../../partials/nav.php");
 //only admin has permission to delete
 if (!has_role("Admin") && !has_role("Moderator")) {
@@ -21,3 +22,4 @@ if ($id > 0) {
 }
 //redirect to list
 die(header("Location: " . get_url("admin/list_currency.php")));
+ob_end_flush();
